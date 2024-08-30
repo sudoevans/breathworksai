@@ -1,3 +1,5 @@
+import React from 'react';
+
 export function Form({
   action,
   children,
@@ -8,38 +10,29 @@ export function Form({
   return (
     <form
       action={action}
-      className="flex flex-col space-y-4 bg-gray-50 px-4 py-8 sm:px-16"
+      className="flex flex-col space-y-4"
     >
-      <div>
-        <label
-          htmlFor="email"
-          className="block text-xs text-gray-600 uppercase"
-        >
-          Email Address
-        </label>
+      <div className="relative mb-4">
+        <i className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 fas fa-envelope"></i>
         <input
           id="email"
           name="email"
           type="email"
-          placeholder="user@acme.com"
+          placeholder="Email"
           autoComplete="email"
           required
-          className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
+          className="w-full p-2 pl-8 text-gray-800 border-b border-gray-300 focus:outline-none focus:border-purple-500"
         />
       </div>
-      <div>
-        <label
-          htmlFor="password"
-          className="block text-xs text-gray-600 uppercase"
-        >
-          Password
-        </label>
+      <div className="relative mb-4">
+        <i className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 fas fa-lock"></i>
         <input
           id="password"
           name="password"
           type="password"
+          placeholder="Password"
           required
-          className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
+          className="w-full p-2 pl-8 text-gray-800 border-b border-gray-300 focus:outline-none focus:border-purple-500"
         />
       </div>
       {children}

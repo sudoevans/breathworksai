@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "@types/node": "^20.10.5",
-    "@types/react": "^18.2.45",
     "@types/react-dom": "^18.2.18",
     "bcrypt-ts": "^5.0.0",
     "drizzle-orm": "^0.29.2",
@@ -20,6 +19,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/react": "^18.2.45",
     "autoprefixer": "^10.4.16",
     "eslint": "8.56.0",
     "eslint-config-next": "^14.0.4",
