@@ -35,3 +35,6 @@ yarn-error.log*
 # vercel
 .vercel
 .env*.local
+
+public\videos\space-background.mp4
+public/videos/space-background.mp4

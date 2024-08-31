@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Home, User, Smile } from 'lucide-react';
 import Image from 'next/image';
+import { auth, signOut } from 'app/auth';
 
 
 const guides = [
