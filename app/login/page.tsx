@@ -60,7 +60,7 @@ export default function Login() {
             </p>
           </div>
           <SubmitButton className="w-full bg-white text-purple-900 py-3 rounded-full font-semibold hover:bg-purple-100 transition duration-300">
-            Let's Go
+            Lets Go
           </SubmitButton>
         </form>
       </div>

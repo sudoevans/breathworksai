@@ -114,7 +114,7 @@ export default function Signup() {
             Note: name pronunciation is still in beta. You can go back and uncheck this box
           </p>
           <SubmitButton className="w-full py-2 px-4 bg-white text-black font-semibold rounded-full hover:bg-purple-100 transition duration-300">
-            Let's Go
+            Lets Go
           </SubmitButton>
         </form>
       </div>
