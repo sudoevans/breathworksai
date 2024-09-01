@@ -40,7 +40,7 @@ async function ensureTableExists() {
       );`;
   }
 
-  const table = pgTable('User', {
+  const table = pgTable('Users', {
     id: serial('id').primaryKey(),
     name: varchar('name', { length: 64 }),
     email: varchar('email', { length: 64 }),
