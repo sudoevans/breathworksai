@@ -1,5 +1,5 @@
 import './globals.css';
-
+import { SessionProvider } from 'next-auth/react';
 import { GeistSans } from 'geist/font/sans';
 
 let title = 'Next.js + Postgres Auth Starter';
@@ -24,7 +24,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={GeistSans.variable}>{children}</body>
+      <body className={GeistSans.variable}>
+        <SessionProvider>{children}</SessionProvider>
+      </body>
     </html>
   );
 }
