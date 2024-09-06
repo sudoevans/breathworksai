@@ -2,6 +2,7 @@
 import React, { FormEvent, useState } from 'react';
 import Logo from '../components/Logo';
 import { useRouter } from 'next/navigation';
+import { saveToLocalStorage } from '../../utils/localStorage';
 
 export default function TryForFree() {
   const [name, setName] = useState<string | null>()
@@ -10,6 +11,7 @@ export default function TryForFree() {
 
   const handleFreeTrySubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault()
+    saveToLocalStorage('selections', {name, language})
     name?.length && router.push('/create')
   }
   

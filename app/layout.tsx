@@ -1,6 +1,6 @@
 import './globals.css';
 import { GeistSans } from 'geist/font/sans';
-import { ClientWrapper } from './components/ClientWrapper';
+// import { ClientWrapper } from './components/ClientWrapper';
 
 let title = 'Next.js + Postgres Auth Starter';
 let description =
@@ -25,7 +25,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={GeistSans.variable}>
-        <ClientWrapper>{children}</ClientWrapper>
+        {/* <ClientWrapper>{children}</ClientWrapper> */}
+        {children}
       </body>
     </html>
   );

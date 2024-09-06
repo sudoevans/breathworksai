@@ -35,10 +35,10 @@ export default function BreathworkLandingPage() {
 
         {/* Buttons */}
         <div className="space-y-4 mb-16">
-          <Link href="/try-for-free" className="block w-full bg-white text-purple-900 py-3 rounded-full font-semibold hover:bg-purple-100 transition duration-300">
+          <Link href="/try-for-free" className="cursor-pointer block w-full bg-white text-purple-900 py-3 rounded-full font-semibold hover:bg-purple-100 transition duration-300">
             Try for free
           </Link>
-          <Link href="/login" className="block w-full bg-transparent border border-white text-white py-3 rounded-full font-semibold hover:bg-white hover:text-purple-900 transition duration-300">
+          <Link href="/login" className="cursor-pointer block w-full bg-transparent border border-white text-white py-3 rounded-full font-semibold hover:bg-white hover:text-purple-900 transition duration-300">
             Log in
           </Link>
         </div>

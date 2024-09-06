@@ -1,24 +1,55 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { useSession } from 'next-auth/react';
+// import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Swiper from 'swiper';
+import SwiperCore from 'swiper';
+import   { Pagination, Navigation } from 'swiper/modules'
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 // Define types for our selections
 type Voice = 'Ryan' | 'Jenny' | 'Amelia';
 type Music = 'Space' | 'Hip hop' | 'Techno';
 type Purpose = 'Space' | 'Be happy' | 'Focus';
 
+const guides = [
+  {
+    name: 'Jenny',
+    image: 'https://via.placeholder.com/150', // Replace with actual image
+    description: 'Jenny is our most popular guide',
+  },
+  {
+    name: 'John',
+    image: 'https://via.placeholder.com/150', // Replace with actual image
+    description: 'John will guide you through the best sessions',
+  },
+  {
+    name: 'Sara',
+    image: 'https://via.placeholder.com/150', // Replace with actual image
+    description: 'Sara helps you find your purpose',
+  },
+];
+
 const BreathworkSession: React.FC = () => {
-  const { data: session, status } = useSession();
+  // const { data: session, status } = useSession();
   const router = useRouter();
   
   const [selectedVoice, setSelectedVoice] = useState<Voice>('Ryan');
   const [selectedMusic, setSelectedMusic] = useState<Music>('Hip hop');
   const [selectedPurpose, setSelectedPurpose] = useState<Purpose>('Be happy');
   const [progress, setProgress] = useState<number>(0);
+  const [position, setPosition] = useState(2); // default selected position
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const swiper = new Swiper(
+    '.swiper', {
+  modules: [Navigation, Pagination],
+    }
+  )
 
   // useEffect(() => {
   //   if (status === 'unauthenticated') {
@@ -34,9 +65,9 @@ const BreathworkSession: React.FC = () => {
     }
   }, [selectedVoice]);
 
-  const handleVoiceChange = (voice: Voice) => {
-    setSelectedVoice(voice);
-  };
+  // const handleVoiceChange = (voice: Voice) => {
+  //   setSelectedVoice(voice);
+  // };
 
   const handleMusicChange = (music: Music) => {
     setSelectedMusic(music);
@@ -58,50 +89,93 @@ const BreathworkSession: React.FC = () => {
     }, 500);
   };
 
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
+
+  const voices = ['Ryan', 'Jenny', 'Amelia'];
+
+  const handleVoiceChange = (voice: any, index: any) => {
+    setSelectedVoice(voice);
+    setPosition(index + 1);
+  };
+
+  // if (status === 'loading') {
+  //   return <div>Loading...</div>;
+  // }
 
   // if (!session) {
   //   return null;
   // }
+  
 
   return (
-    <div className="relative min-h-screen bg-black text-white flex flex-col items-center justify-center">
+    <div className="relative min-h-screen text-white flex flex-col pt-[5vh] items-center">
       <video
         autoPlay
         loop
         muted
-        className="absolute z-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover z-0"
       >
-        <source src="/videos/galaxy_background.mp4" type="video/mp4" />
+        <source src="/videos/space-background.mp4" type="video/mp4" />
       </video>
       
       <div className="z-10 w-full max-w-md p-6 space-y-8">
         <h1 className="text-2xl font-bold text-center">Create your personal Breathwork session</h1>
         
-        <div className="space-y-6">
+        <div className="space-y-3">
           <div>
-            <h2 className="text-xl mb-2">1. Select Voice</h2>
-            <div className="flex justify-between">
-              {['Ryan', 'Jenny', 'Amelia'].map((voice) => (
-                <div
-                  key={voice}
-                  className={`cursor-pointer transition-opacity duration-300 ${
-                    selectedVoice === voice ? 'opacity-100' : 'opacity-50'
-                  }`}
-                  onClick={() => handleVoiceChange(voice as Voice)}
-                >
-                  <Image
-                    src={`/images/${voice.toLowerCase()}.png`}
-                    alt={voice}
-                    width={100}
-                    height={100}
-                    className="rounded-lg"
-                  />
-                </div>
-              ))}
+            <div className='w-fit mx-auto'>
+              <h2 className="text-xl mb-2">1. Select Voice</h2>
             </div>
+            
+            <div className="grid h-[20rem] mt-[6rem] grid-cols-5 items-center justify-items-center grid-rows-2">
+      {/* Radio Buttons */}
+      <input
+        type="radio"
+        name="position"
+        className='w-4 h-4 cursor-pointer'
+        checked={position === 1}
+        onChange={() => setPosition(1)}
+      />
+      <input
+        type="radio"
+        name="position"
+        className='w-4 h-4 cursor-pointer'
+        checked={position === 2}
+        onChange={() => setPosition(2)}
+      />
+      <input
+        type="radio"
+        name="position"
+        className='w-4 h-4 cursor-pointer'
+        checked={position === 3}
+        onChange={() => setPosition(3)}
+      />
+
+      {/* Carousel */}
+      <div id="carousel">
+        {voices.map((voice, index) => (
+          <div
+            key={voice}
+            className={`cursor-pointer transition-opacity duration-300 item ${
+              selectedVoice === voice ? 'opacity-100' : 'opacity-50'
+            }`}
+            style={{
+              '--position': position,
+              '--offset': index + 1,
+            } as React.CSSProperties}
+            onClick={() => handleVoiceChange(voice, index)}
+          >
+            <img
+              src={`/images/${voice.toLowerCase()}.png`}
+              alt={voice}
+              className="rounded-lg w-full h-full"
+            />
+          </div>
+        ))}
+        
+      </div>
+      
+    </div>
+    <div className='-mt-[2.5rem] mb-4 bg-purple-600 capitalize flex justify-center items-center w-[10rem] mx-auto py-2 rounded-full text-black font-semibold tracking-wider text-2xl'>{selectedVoice}</div>
             <p className="text-center mt-2">{selectedVoice} is our most popular guide</p>
           </div>
 
@@ -138,7 +212,7 @@ const BreathworkSession: React.FC = () => {
                 </button>
               ))}
             </div>
-            <p className="text-center mt-2">Gives you energy boost and the strength to fight.</p>
+            <p className="text-center">Gives you energy boost and the strength to fight.</p>
           </div>
         </div>
 
