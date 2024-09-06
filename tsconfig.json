@@ -28,6 +28,6 @@
       }
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/try-for-free/page.js", "app/register/page.js", "app/protected/page.ts", "app/login/page.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/try-for-free/page.js", "app/register/page.js", "app/protected/page.ts", "app/login/page.js", "app/api/auth/[...nextauth]/route.ts"],
   "exclude": ["node_modules"]
 }

@@ -2,9 +2,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
 
-import { ClientWrapper } from '../ClientWrapper';
+import { ClientWrapper } from '../components/ClientWrapper';
+import { useRouter } from 'next/navigation';
 
 type Voice = 'Ryan' | 'Jenny' | 'Amelia';
 type Music = 'Space' | 'Hip hop' | 'Techno';

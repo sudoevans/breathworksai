@@ -1,11 +1,12 @@
-"use client";
 import React from 'react';
 import Link from 'next/link';
 import Logo from './components/Logo';
 
 export default function BreathworkLandingPage() {
+
+
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white flex flex-col items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-[#0f172a] text-white py-10 flex flex-col items-center justify-center relative overflow-hidden">
       {/* Background Video */}
       <video
         autoPlay

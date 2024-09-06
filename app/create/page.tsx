@@ -1,7 +1,8 @@
+'use client'
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 // Define types for our selections
 type Voice = 'Ryan' | 'Jenny' | 'Amelia';
@@ -19,11 +20,11 @@ const BreathworkSession: React.FC = () => {
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    }
-  }, [status, router]);
+  // useEffect(() => {
+  //   if (status === 'unauthenticated') {
+  //     router.push('/login');
+  //   }
+  // }, [status, router]);
 
   useEffect(() => {
     // Play sample audio when voice changes
@@ -61,9 +62,9 @@ const BreathworkSession: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  if (!session) {
-    return null;
-  }
+  // if (!session) {
+  //   return null;
+  // }
 
   return (
     <div className="relative min-h-screen bg-black text-white flex flex-col items-center justify-center">

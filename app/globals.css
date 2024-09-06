@@ -10,4 +10,77 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  .range-input {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: #eeecf3;
+    opacity: .8;
+    border-radius: 4px;
+    outline: none;
+  }
   
+  .range-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 26px;
+    height: 20px;
+    background: #AE9BCE;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .range-input::-moz-range-thumb {
+    width: 26px;
+    height: 20px;
+    background: #AE9BCE;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .range-input::-ms-thumb {
+    width: 26px;
+    height: 20px;
+    background: #AE9BCE;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .range-sub-input {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 3px;
+    background: #eeecf3;
+    opacity: .8;
+    border-radius: 4px;
+    outline: none;
+  }
+  
+  .range-sub-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 14px;
+    background: #AE9BCE;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .range-sub-input::-moz-range-thumb {
+    width: 20px;
+    height: 14px;
+    background: #AE9BCE;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .range-sub-input::-ms-thumb {
+    width: 20px;
+    height: 14px;
+    background: #AE9BCE;
+    border-radius: 4px;
+    cursor: pointer;
+  }
