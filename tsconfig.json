@@ -47,7 +47,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/home/try-for-free/page.js",
+    "app/(home)/try-for-free/page.js",
     "app/register/page.js",
     "app/protected/page.ts",
     "app/login/page.js",
