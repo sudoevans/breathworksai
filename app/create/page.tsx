@@ -26,22 +26,74 @@ const BreathworkSession: React.FC = () => {
   const [progress, setProgress] = useState<number>(0);
   const [position, setPosition] = useState(2);
 
+  const [guideAudios, setGuideAudios] = useState<Record<string, string>>({}); // Store preloaded audios
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const guideAudioRef = useRef<HTMLAudioElement | null>(null);
+
+
+    // Preload all guide audios when the component mounts
+  useEffect(() => {
+    const preloadGuideAudios = async () => {
+      const loadingQueue = Object.keys(JSON.parse(JSON.stringify(messages)))
+      for (let voice of loadingQueue) {
+        await preloadAudio(voice);
+      }
+    };
+    preloadGuideAudios();
+  }, []);
+
+
+  // Preload individual guide audio
+  const preloadAudio = async (voice: string) => {
+    try {
+      const alterEgo = JSON.parse(JSON.stringify(messages))[voice]?.ego;
+      const parsedMessages = JSON.parse(JSON.stringify(messages));
+    const newString = replacePlaceholder(parsedMessages[voice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'english'], loadFromLocalStorage('selections')?.name);
+
+      const response = await fetch("/api/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: newString, voice: `${alterEgo}` }),
+      });
+
+      const file = await response.blob();
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        setGuideAudios((prevAudios) => ({
+          ...prevAudios,
+          [voice]: reader.result as string,
+        }));
+      };
+    } catch (error:any) {
+      if (error.name === 'AbortError') {
+        console.log(`Preload for ${voice} was aborted.`);
+      } else {
+        console.error(`Failed to preload audio for ${voice}:`, error);
+      }
+    }
+  };
 
 
   useEffect(() => {
     // Play sample audio when voice changes
     if (audioRef.current) {
-      audioRef.current.src = `/audio/${selectedVoice.toLowerCase()}_sample.mp3`;
+      audioRef.current.src = `/audio/jenny_sample.mp3`;
       audioRef.current.play();
     }
 
 
   }, [selectedVoice]);
 
-  // const handleVoiceChange = (voice: Voice) => {
-  //   setSelectedVoice(voice);
-  // };
+  //   // Play sample audio when voice changes
+  // useEffect(() => {
+  //   if (guideAudioRef.current && guideAudios[selectedVoice]) {
+  //     guideAudioRef.current.src = guideAudios[selectedVoice]; // Use preloaded audio
+  //     guideAudioRef.current.play();
+  //   }
+  // }, [selectedVoice, guideAudios]);
+
 
   const handleMusicChange = (music: Music) => {
     setSelectedMusic(music);
@@ -68,28 +120,37 @@ const BreathworkSession: React.FC = () => {
   const voices = ['Christopher','Ryan', 'Jenny', 'Amelia'];
 
   const handleVoiceChange = (voice: any, index: any) => {
+    guideAudioRef?.current?.pause()
     setSelectedVoice(voice);
     setPosition(index + 1);
     const parsedMessages = JSON.parse(JSON.stringify(messages));
+    const newString = replacePlaceholder(parsedMessages[voice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'english'], loadFromLocalStorage('selections')?.name);
+
+    // If audio for selected voice isn't preloaded yet, fetch it immediately
+    if (!guideAudios[voice]) {
+      setTimeout(() => {
+      getElevenLabsResponse(newString);
+    }, 300);
+    } else {
+      
+      setTimeout(() => {
+        playPreloadedAudio(guideAudios[voice]);
+      }, 2000)
+    }
     
-    const newString = replacePlaceholder(parsedMessages[selectedVoice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'english'], loadFromLocalStorage('selections')?.name)
-    setTimeout(() => {
-      getElevenLabsResponse(newString)
-    }, 300)
   };
 
-  // useEffect(() => {
-  //   const parsedMessages = JSON.parse(JSON.stringify(messages));
-  //   generateAndPlayAudio({
-  //     name: selectedVoice,
-  //     text: parsedMessages[selectedVoice][loadFromLocalStorage('selections')?.language[0]?.toLowerCase || 'english'],
-  //   })
-
-  //   // elevenLabs(selectedVoice)
-  // }, [selectedVoice])
+    const playPreloadedAudio = (audioSrc: string) => {
+    if (guideAudioRef.current) {
+      guideAudioRef.current.src = audioSrc;
+      guideAudioRef.current.playbackRate = 0.7
+      guideAudioRef.current.play();
+    }
+  };
 
 
     const getElevenLabsResponse = async (text: string) => {
+      const alterEgo = JSON.parse(JSON.stringify(messages))[selectedVoice]?.ego
     const response = await fetch("/api/create", {
       method: "POST",
       headers: {
@@ -97,7 +158,7 @@ const BreathworkSession: React.FC = () => {
       },
       body: JSON.stringify({
         message: text,
-        voice: "George"
+        voice: `${alterEgo}`
       })
     });
 
@@ -105,9 +166,10 @@ const BreathworkSession: React.FC = () => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      if (audioRef.current) {
-        audioRef.current.src = reader.result as string;
-        audioRef.current.play();
+      if (guideAudioRef.current) {
+        guideAudioRef.current.src = reader.result as string;
+        guideAudioRef.current.playbackRate = 0.7
+        guideAudioRef.current.play();
       }
     }
   };
@@ -194,7 +256,10 @@ const BreathworkSession: React.FC = () => {
       </div>
       
     </div>
-    <div className='-mt-[2.5rem] mb-4 bg-purple-600 capitalize flex justify-center items-center w-[10rem] mx-auto py-2 rounded-full text-black font-semibold tracking-wider text-2xl'>{selectedVoice}</div>
+    <div className='-mt-[2.5rem] mb-4 bg-purple-600 capitalize flex justify-center items-center min-w-[10rem] mx-auto py-2 rounded-full text-black w-fit font-semibold tracking-wider px-7 text-2xl' onClick={() => {
+      guideAudioRef.current?.pause()
+      audioRef.current?.pause()
+    }}>{selectedVoice}</div>
             <p className="text-center mt-2 font-light tracking-wide text-lg">{selectedVoice} is our most popular guide</p>
           </div>
 
@@ -269,6 +334,7 @@ const BreathworkSession: React.FC = () => {
       </div>
 
       <audio ref={audioRef} />
+      <audio ref={guideAudioRef} />
     </div>
   );
 };
