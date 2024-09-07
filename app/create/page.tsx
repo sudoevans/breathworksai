@@ -13,7 +13,7 @@ import { loadFromLocalStorage } from 'utils/localStorage';
 import { replacePlaceholder } from 'utils/replacebuilder';
 
 // Define types for our selections
-type Voice = 'Ryan' | 'Jenny' | 'Amelia';
+type Voice = 'Ryan' | 'Jenny' | 'Amelia' | 'Christopher';
 type Music = 'Space' | 'Hip hop' | 'Techno';
 type Purpose = 'Space' | 'Be happy' | 'Focus';
 
