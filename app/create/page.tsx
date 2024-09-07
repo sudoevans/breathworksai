@@ -8,47 +8,28 @@ import ProfileIcon from '../assets/ProfileIcon';
 import SmileyIcon from '../assets/SmileyIcon';
 import SoundIcon from '../assets/SoundIcon';
 import MusicIcon from '../assets/MusicIcon';
+import messages from '../../sample-voice.json';
+import { loadFromLocalStorage } from 'utils/localStorage';
+import { replacePlaceholder } from 'utils/replacebuilder';
 
 // Define types for our selections
 type Voice = 'Ryan' | 'Jenny' | 'Amelia';
 type Music = 'Space' | 'Hip hop' | 'Techno';
 type Purpose = 'Space' | 'Be happy' | 'Focus';
 
-const guides = [
-  {
-    name: 'Jenny',
-    image: 'https://via.placeholder.com/150', // Replace with actual image
-    description: 'Jenny is our most popular guide',
-  },
-  {
-    name: 'John',
-    image: 'https://via.placeholder.com/150', // Replace with actual image
-    description: 'John will guide you through the best sessions',
-  },
-  {
-    name: 'Sara',
-    image: 'https://via.placeholder.com/150', // Replace with actual image
-    description: 'Sara helps you find your purpose',
-  },
-];
 
 const BreathworkSession: React.FC = () => {
-  // const { data: session, status } = useSession();
   const router = useRouter();
   
   const [selectedVoice, setSelectedVoice] = useState<Voice>('Ryan');
   const [selectedMusic, setSelectedMusic] = useState<Music>('Hip hop');
   const [selectedPurpose, setSelectedPurpose] = useState<Purpose>('Be happy');
   const [progress, setProgress] = useState<number>(0);
-  const [position, setPosition] = useState(2); // default selected position
+  const [position, setPosition] = useState(2);
+    const [audio, setAudio] = useState(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // useEffect(() => {
-  //   if (status === 'unauthenticated') {
-  //     router.push('/login');
-  //   }
-  // }, [status, router]);
 
   useEffect(() => {
     // Play sample audio when voice changes
@@ -56,6 +37,8 @@ const BreathworkSession: React.FC = () => {
       audioRef.current.src = `/audio/${selectedVoice.toLowerCase()}_sample.mp3`;
       audioRef.current.play();
     }
+
+
   }, [selectedVoice]);
 
   // const handleVoiceChange = (voice: Voice) => {
@@ -89,15 +72,48 @@ const BreathworkSession: React.FC = () => {
   const handleVoiceChange = (voice: any, index: any) => {
     setSelectedVoice(voice);
     setPosition(index + 1);
+    const parsedMessages = JSON.parse(JSON.stringify(messages));
+    
+    const newString = replacePlaceholder(parsedMessages[selectedVoice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'english'], loadFromLocalStorage('selections')?.name)
+    setTimeout(() => {
+      getElevenLabsResponse(newString)
+    }, 300)
   };
 
-  // if (status === 'loading') {
-  //   return <div>Loading...</div>;
-  // }
+  // useEffect(() => {
+  //   const parsedMessages = JSON.parse(JSON.stringify(messages));
+  //   generateAndPlayAudio({
+  //     name: selectedVoice,
+  //     text: parsedMessages[selectedVoice][loadFromLocalStorage('selections')?.language[0]?.toLowerCase || 'english'],
+  //   })
 
-  // if (!session) {
-  //   return null;
-  // }
+  //   // elevenLabs(selectedVoice)
+  // }, [selectedVoice])
+
+
+    const getElevenLabsResponse = async (text: string) => {
+    const response = await fetch("/api/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: text,
+        voice: "George"
+      })
+    });
+
+    const file = await response.blob();
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      if (audioRef.current) {
+        audioRef.current.src = reader.result as string;
+        audioRef.current.play();
+      }
+    }
+  };
+
   
 
   return (

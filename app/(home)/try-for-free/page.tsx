@@ -15,9 +15,7 @@ export default function TryForFree() {
   const handleFreeTrySubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     saveToLocalStorage('selections', {name, language});
-    console.log("Pushed", checkedName, name?.length)
     if ((checkedName && !!name?.length) || !checkedName){
-      console.log("Pushed", checkedName, name?.length)
       router.push('/create');
     }
   }
