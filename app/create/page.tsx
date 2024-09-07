@@ -1,6 +1,5 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
 // import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import HomeIcon from '../assets/HomeIcon';
@@ -26,7 +25,6 @@ const BreathworkSession: React.FC = () => {
   const [selectedPurpose, setSelectedPurpose] = useState<Purpose>('Be happy');
   const [progress, setProgress] = useState<number>(0);
   const [position, setPosition] = useState(2);
-    const [audio, setAudio] = useState(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
