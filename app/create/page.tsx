@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import HomeIcon from '../assets/HomeIcon';
 import ProfileIcon from '../assets/ProfileIcon';
+import SmileyIcon from '../assets/SmileyIcon';
 
 // Define types for our selections
 type Voice = 'Ryan' | 'Jenny' | 'Amelia';
@@ -113,7 +114,10 @@ const BreathworkSession: React.FC = () => {
         
         <div className="space-y-3">
           <div>
-            <div className='w-fit mx-auto'>
+            <div className='w-fit flex items-center gap-x-4 mx-auto'>
+              <div className='border-[#9333ea] rounded-full w-fit border-2'>
+                <SmileyIcon/>
+              </div>
               <h2 className="text-xl">1. Select Voice</h2>
             </div>
             
