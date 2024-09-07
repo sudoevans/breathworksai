@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import Link from 'next/link';
 import { signIn } from 'app/auth';
@@ -26,14 +27,16 @@ export default function Login() {
         <h2 className="text-3xl font-bold mb-8">Log in</h2>
 
         <form
-          action={async (formData: FormData) => {
-            'use server';
-            await signIn('credentials', {
-              redirectTo: '/protected',
-              email: formData.get('email') as string,
-              password: formData.get('password') as string,
-            });
-          }}
+          // action={async (formData: FormData) => {
+          //   // 'use server';
+          //   // await signIn('credentials', {
+          //   //   redirectTo: '/protected',
+          //   //   email: formData.get('email') as string,
+          //   //   password: formData.get('password') as string,
+          //   // });
+          // }}
+
+          onSubmit={() => {}}
           className="flex flex-col space-y-4"
         >
           <div className="bg-white rounded-lg p-4 mb-4">
