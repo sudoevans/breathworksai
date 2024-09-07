@@ -84,7 +84,7 @@ const BreathworkSession: React.FC = () => {
   };
 
 
-  const voices = ['Ryan', 'Jenny', 'Amelia'];
+  const voices = ['Christopher','Ryan', 'Jenny', 'Amelia'];
 
   const handleVoiceChange = (voice: any, index: any) => {
     setSelectedVoice(voice);
@@ -111,7 +111,7 @@ const BreathworkSession: React.FC = () => {
       </div>
       </div>
       
-      <div className="z-10 w-full max-w-md p-6 space-y-4">
+      <div className="z-10 w-full max-w-md p-6 mx-auto space-y-4">
         <h1 className="text-2xl font-medium text-center tracking-wide">Create your personal Breathwork session</h1>
         
         <div className="space-y-3">
@@ -123,7 +123,7 @@ const BreathworkSession: React.FC = () => {
               <h2 className="text-xl">1. Select Voice</h2>
             </div>
             
-            <div className="grid h-[20rem] mt-[6rem] grid-cols-5 items-center justify-items-center grid-rows-2">
+            <div className="grid h-[20rem] mt-[6rem] grid-cols-6 items-center justify-items-center grid-rows-2">
       {/* Radio Buttons */}
       <input
         type="radio"
@@ -145,6 +145,14 @@ const BreathworkSession: React.FC = () => {
         className='w-4 h-4 cursor-pointer'
         checked={position === 3}
         onChange={() => setPosition(3)}
+      />
+
+      <input
+        type="radio"
+        name="position"
+        className='w-4 h-4 cursor-pointer'
+        checked={position === 4}
+        onChange={() => setPosition(4)}
       />
 
       {/* Carousel */}
@@ -232,11 +240,13 @@ const BreathworkSession: React.FC = () => {
           Create
         </button>
         {progress > 0 && progress < 100 && (
-          <div className="w-full bg-gray-200 overflow-hidden rounded-full h-[60px] dark:bg-gray-700">
+          <div className="w-full bg-white overflow-hidden rounded-full h-[60px] dark:bg-white">
             <div
-              className="bg-white h-full"
+              className="bg-[#0091ff] h-full flex items-center justify-center"
               style={{ width: `${progress}%` }}
-            ></div>
+            >
+              {progress}%
+            </div>
           </div>
         )}
         </div>
