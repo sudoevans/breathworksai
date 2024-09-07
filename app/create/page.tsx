@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import HomeIcon from '../assets/HomeIcon';
 import ProfileIcon from '../assets/ProfileIcon';
 import SmileyIcon from '../assets/SmileyIcon';
+import SoundIcon from '../assets/SoundIcon';
+import MusicIcon from '../assets/MusicIcon';
 
 // Define types for our selections
 type Voice = 'Ryan' | 'Jenny' | 'Amelia';
@@ -171,11 +173,17 @@ const BreathworkSession: React.FC = () => {
       
     </div>
     <div className='-mt-[2.5rem] mb-4 bg-purple-600 capitalize flex justify-center items-center w-[10rem] mx-auto py-2 rounded-full text-black font-semibold tracking-wider text-2xl'>{selectedVoice}</div>
-            <p className="text-center mt-2">{selectedVoice} is our most popular guide</p>
+            <p className="text-center mt-2 font-light tracking-wide text-lg">{selectedVoice} is our most popular guide</p>
           </div>
 
-          <div>
-            <h2 className="text-xl mb-2">2. Select Music</h2>
+          <div className='pt-5 px-10 space-y-4'>
+            <div className='w-fit flex items-center gap-x-4 mx-auto'>
+              <div className='border-[#9333ea] rounded-full w-fit border-2'>
+                <SoundIcon/>
+              </div>
+              <h2 className="text-xl mb-2">2. Select Music</h2>
+            </div>
+            
             <div className="flex justify-between">
               {['Space', 'Hip hop', 'Techno'].map((music) => (
                 <button
@@ -189,11 +197,16 @@ const BreathworkSession: React.FC = () => {
                 </button>
               ))}
             </div>
-            <p className="text-center mt-2">Gives you energy boost and the strength to fight.</p>
+            <p className="text-center mt-2 font-light tracking-wide text-lg">Gives you energy boost and the strength to fight.</p>
           </div>
 
-          <div>
+          <div className='pt-5 px-10 space-y-4'>
+            <div className='w-fit flex items-center gap-x-4 mx-auto'>
+              <div className='border-[#9333ea] p-1 rounded-full w-fit border-2'>
+                <MusicIcon/>
+              </div>
             <h2 className="text-xl mb-2">3. Select Purpose</h2>
+            </div>
             <div className="flex justify-between">
               {['Space', 'Be happy', 'Focus'].map((purpose) => (
                 <button
@@ -207,17 +220,17 @@ const BreathworkSession: React.FC = () => {
                 </button>
               ))}
             </div>
-            <p className="text-center">Gives you energy boost and the strength to fight.</p>
+            <p className="text-center mt-2 font-light tracking-wide text-lg">Gives you energy boost and the strength to fight.</p>
           </div>
         </div>
 
-        <button
-          className="w-full bg-white text-purple-800 py-2 rounded-lg font-bold"
+        <div className='px-10'>
+          <button
+          className="cursor-pointer block w-full bg-white text-2xl text-[#0A0A0B] py-3.5 disabled:cursor-not-allowed rounded-full font-bold hover:bg-opacity-85 transition duration-300"
           onClick={handleCreate}
         >
           Create
         </button>
-
         {progress > 0 && progress < 100 && (
           <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
             <div
@@ -226,6 +239,9 @@ const BreathworkSession: React.FC = () => {
             ></div>
           </div>
         )}
+        </div>
+
+        
       </div>
 
       <audio ref={audioRef} />
