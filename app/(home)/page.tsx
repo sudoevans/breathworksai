@@ -16,7 +16,7 @@ const page = () => {
 
         {/* Buttons */}
         <div className="space-y-4 mb-16">
-          <Link href="/home/try-for-free" className="cursor-pointer block w-full bg-white text-2xl text-[#0A0A0B] py-3.5 rounded-full font-bold hover:bg-opacity-85 transition duration-300">
+          <Link href="/try-for-free" className="cursor-pointer block w-full bg-white text-2xl text-[#0A0A0B] py-3.5 rounded-full font-bold hover:bg-opacity-85 transition duration-300">
             Try for free
           </Link>
           <Link href="/login" className="cursor-pointer block w-full bg-transparent border border-white text-white py-3.5 text-2xl rounded-full font-bold hover:bg-white hover:bg-opacity-85 hover:text-[#0A0A0B] transition duration-300">
