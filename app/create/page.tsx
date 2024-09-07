@@ -224,7 +224,7 @@ const BreathworkSession: React.FC = () => {
           </div>
         </div>
 
-        <div className='px-10'>
+        <div className='px-10 space-y-3'>
           <button
           className="cursor-pointer block w-full bg-white text-2xl text-[#0A0A0B] py-3.5 disabled:cursor-not-allowed rounded-full font-bold hover:bg-opacity-85 transition duration-300"
           onClick={handleCreate}
@@ -232,9 +232,9 @@ const BreathworkSession: React.FC = () => {
           Create
         </button>
         {progress > 0 && progress < 100 && (
-          <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+          <div className="w-full bg-gray-200 overflow-hidden rounded-full h-[60px] dark:bg-gray-700">
             <div
-              className="bg-blue-600 h-2.5 rounded-full"
+              className="bg-white h-full"
               style={{ width: `${progress}%` }}
             ></div>
           </div>

@@ -84,16 +84,9 @@ const PlayerPage = () => {
         }
       };
   return (
-    <div className="relative min-h-screen text-white flex flex-col pt-[5vh] items-center">
-    <video
-        autoPlay
-        loop
-        muted
-        className="absolute inset-0 w-full h-full object-cover z-0"
-      >
-        <source src="/videos/space-background.mp4" type="video/mp4" />
-      </video>
-    <div className="z-10 w-full bg-player-bg min-h-[48.625rem] pt-[10rem] flex flex-col justify-center gap-y-6 items-center max-w-md p-6 space-y-8">
+    <div>
+    
+    <div className="z-10 w-full bg-player-bg h-screen md:h-auto md:min-h-[48.625rem] pt-[10rem] flex flex-col justify-center gap-y-6 items-center max-w-md p-6 space-y-8">
     <p>Speech of David and Ryan</p>
       <div className="flex items-center gap-x-10 mb-4">
         <button onClick={handleRewind}>
