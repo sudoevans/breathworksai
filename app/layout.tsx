@@ -26,7 +26,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={GeistSans.variable}>
         {/* <ClientWrapper>{children}</ClientWrapper> */}
-        {children}
+        <div className="bg-[url('/videos/starbackground_video.gif')]">
+          {children}
+        </div>
+        
       </body>
     </html>
   );

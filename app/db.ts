@@ -17,6 +17,8 @@ export async function createUser(name: string, email: string, password: string, 
   let salt = genSaltSync(10);
   let hash = hashSync(password, salt);
 
+  console.log(users)
+
   return await db.insert(users).values({ name, email, password: hash, language, say_name: sayName });
 }
 

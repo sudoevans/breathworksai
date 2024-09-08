@@ -36,7 +36,7 @@ export async function POST(req: Request) {
     const requestFn = () => elevenlabs.generate({
       voice: voice,
       model_id: "eleven_turbo_v2",
-      voice_settings: { similarity_boost: 0.5, stability: 0.5 },
+      voice_settings: { similarity_boost: 0.5, stability: 0.0,  use_speaker_boost: true, },
       text: message,
     },{
       timeoutInSeconds: 100,
