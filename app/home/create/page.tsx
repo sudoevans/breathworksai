@@ -88,7 +88,7 @@ const BreathworkSession: React.FC = () => {
     // Play sample audio when voice changes
     if (audioRef.current) {
       audioRef.current.src = `/audio/jenny_sample.mp3`;
-      audioRef.current.play();
+      // audioRef.current.play();
     }
 
 
@@ -151,6 +151,7 @@ const BreathworkSession: React.FC = () => {
   // method to play selected audio voice
     const playPreloadedAudio = (audioSrc: string) => {
     if (guideAudioRef.current) {
+      audioRef.current.play();
       guideAudioRef.current.src = audioSrc;
       guideAudioRef.current.playbackRate = 0.7
       guideAudioRef.current.play();
