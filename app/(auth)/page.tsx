@@ -17,15 +17,12 @@ const page = () => {
 
         {/* Buttons */}
         <div className="space-y-4 mb-16">
-          <Link href="/home/register" className="cursor-pointer block w-full bg-white text-2xl text-[#0A0A0B] py-3.5 rounded-full font-bold hover:bg-opacity-85 transition duration-300">
+          <Link href="/register" className="cursor-pointer block w-full bg-white text-2xl text-[#0A0A0B] py-3.5 rounded-full font-bold hover:bg-opacity-85 transition duration-300">
             Try for free
           </Link>
-          <button onClick={async() => await signIn("credentials",{
-            email: "a",
-            password: "b"
-          })} className="cursor-pointer block w-full bg-transparent border border-white text-white py-3.5 text-2xl rounded-full font-bold hover:bg-white hover:bg-opacity-85 hover:text-[#0A0A0B] transition duration-300">
+          <Link href="/login" className="cursor-pointer block w-full bg-transparent border border-white text-white py-3.5 text-2xl rounded-full font-bold hover:bg-white hover:bg-opacity-85 hover:text-[#0A0A0B] transition duration-300">
             Log in
-          </button>
+          </Link>
         </div>
 
         {/* Change Your Life Section */}
@@ -34,7 +31,7 @@ const page = () => {
           <p className="text-lg mb-8 text-gray-300">
             Breath work can significantly reduce stress and improve mental clarity by promoting relaxation and enhancing focus. Incorporating personalized breathing exercises into your daily routine can lead to better emotional wellbeing and overall health.
           </p>
-          <Link href="/home/register" className="cursor-pointer block w-full bg-white text-2xl text-[#0A0A0B] py-3.5 rounded-full font-bold hover:bg-opacity-85 transition duration-300">
+          <Link href="/register" className="cursor-pointer block w-full bg-white text-2xl text-[#0A0A0B] py-3.5 rounded-full font-bold hover:bg-opacity-85 transition duration-300">
             Try for free
           </Link>
         </div>
