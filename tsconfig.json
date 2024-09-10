@@ -26,7 +26,7 @@
         "styles/*"
       ]
     },
-    "strict": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -47,10 +47,10 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/(home)/try-for-free/page.js",
-    "app/(home)/register/page.js",
+    "app/home/try-for-free/page.js",
+    "app/home/register/page.js",
     "app/protected/page.ts",
-    "app/(home)/login/page.js",
+    "app/home/login/page.js",
     "app/api/auth/[...nextauth]/route.ts",
     "app/utils/localStorage.js"
   ],

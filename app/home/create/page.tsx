@@ -2,13 +2,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 // import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import HomeIcon from '../assets/HomeIcon';
-import ProfileIcon from '../assets/ProfileIcon';
-import SmileyIcon from '../assets/SmileyIcon';
-import SoundIcon from '../assets/SoundIcon';
-import MusicIcon from '../assets/MusicIcon';
-import messages from '../../sample-voice.json';
-import { loadFromLocalStorage } from 'utils/localStorage';
+import HomeIcon from '../../assets/HomeIcon';
+import ProfileIcon from '../../assets/ProfileIcon';
+import SmileyIcon from '../../assets/SmileyIcon';
+import SoundIcon from '../../assets/SoundIcon';
+import MusicIcon from '../../assets/MusicIcon';
+import messages from '../../../sample-voice.json';
+import { loadFromLocalStorage, saveToLocalStorage } from 'utils/localStorage';
 import { replacePlaceholder } from 'utils/replacebuilder';
 
 // Define types for our selections
@@ -26,7 +26,7 @@ const BreathworkSession: React.FC = () => {
   const [progress, setProgress] = useState<number>(0);
   const [position, setPosition] = useState(2);
 
-  const [guideAudios, setGuideAudios] = useState<Record<string, string>>({}); // Store preloaded audios
+  const [guideAudios, setGuideAudios] = useState<Record<string, string>>({});
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const guideAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -47,20 +47,28 @@ const BreathworkSession: React.FC = () => {
   // Preload individual guide audio
   const preloadAudio = async (voice: string) => {
     try {
+      // get each model voice alterego
       const alterEgo = JSON.parse(JSON.stringify(messages))[voice]?.ego;
-      const parsedMessages = JSON.parse(JSON.stringify(messages));
-    const newString = replacePlaceholder(parsedMessages[voice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'english'], loadFromLocalStorage('selections')?.name);
 
+      // get each model's supposed message
+      const parsedMessages = JSON.parse(JSON.stringify(messages));
+
+      // replace placeholder text with individual's name or just skip if their preference is not to
+    const newString = replacePlaceholder(parsedMessages[voice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'english'], loadFromLocalStorage('selections')?.name);
+    // fetch  each voice
       const response = await fetch("/api/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: newString, voice: `${alterEgo}` }),
       });
 
+      // convert to blob for processing
       const file = await response.blob();
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
+
+        // store each guides recording to a state
         setGuideAudios((prevAudios) => ({
           ...prevAudios,
           [voice]: reader.result as string,
@@ -111,7 +119,7 @@ const BreathworkSession: React.FC = () => {
       setProgress(currentProgress);
       if (currentProgress >= 100) {
         clearInterval(interval);
-        router.push("/player")
+        router.push("/home/player")
       }
     }, 500);
   };
@@ -140,6 +148,7 @@ const BreathworkSession: React.FC = () => {
     
   };
 
+  // method to play selected audio voice
     const playPreloadedAudio = (audioSrc: string) => {
     if (guideAudioRef.current) {
       guideAudioRef.current.src = audioSrc;
@@ -149,6 +158,7 @@ const BreathworkSession: React.FC = () => {
   };
 
 
+  // important to query selected voice if all voices have not been loaded yet
     const getElevenLabsResponse = async (text: string) => {
       const alterEgo = JSON.parse(JSON.stringify(messages))[selectedVoice]?.ego
     const response = await fetch("/api/create", {
@@ -174,6 +184,12 @@ const BreathworkSession: React.FC = () => {
     }
   };
 
+  const handleVoiceSelection = (voice) => {
+    guideAudioRef.current?.pause()
+    audioRef.current?.pause()
+    // save selected voice to local storage
+    saveToLocalStorage('audio', {"voice-guide": guideAudioRef.current.src, "name": selectedVoice})
+  }
   
 
   return (
@@ -256,10 +272,7 @@ const BreathworkSession: React.FC = () => {
       </div>
       
     </div>
-    <div className='-mt-[2.5rem] mb-4 bg-purple-600 capitalize flex justify-center items-center min-w-[10rem] mx-auto py-2 rounded-full text-black w-fit font-semibold tracking-wider px-7 text-2xl' onClick={() => {
-      guideAudioRef.current?.pause()
-      audioRef.current?.pause()
-    }}>{selectedVoice}</div>
+    <div className='-mt-[2.5rem] mb-4 bg-purple-600 capitalize flex justify-center items-center min-w-[10rem] mx-auto py-2 rounded-full text-black w-fit font-semibold tracking-wider px-7 text-2xl' onClick={handleVoiceSelection}>{selectedVoice}</div>
             <p className="text-center mt-2 font-light tracking-wide text-lg">{selectedVoice} is our most popular guide</p>
           </div>
 

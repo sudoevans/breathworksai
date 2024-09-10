@@ -6,33 +6,53 @@ import { useFormStatus, useFormState } from 'react-dom';
 
 const Snackbar = () => {
     const [visible, setVisible] = useState(false);
-    const { pending, data } = useFormStatus();
+    const { pending } = useFormStatus();
     const [animationClass, setAnimationClass] = useState<string>('');
-    
-    console.log(data)
+    const [submitted, setSubmitted] = useState(false)
 
     useEffect(() => {
       
-    //   if (pending) {
-    // setAnimationClass('slide-in');
-    //   setVisible(true);
-    //   const timer = setTimeout(() => {
-    //       setVisible(false);
-    //       setAnimationClass('slide-out');
-    //   }, 3000); // Snackbar visible for 3 seconds
+      if (pending) {
+        setSubmitted(true)
+      }
+    }, [pending]);
+    
+    useEffect(() => {
+        let timer: any
+        console.log('pending', pending, submitted)
+        if (submitted && !pending) {
+            console.log('After submit')
+            timer = setTimeout(() => {
+                setVisible(true);
+                setAnimationClass('slide-in');
+          }, 300);
+        }
 
-    //   return () => clearTimeout(timer);
-    // }
-  }, [pending]);
+        return () => clearTimeout(timer);
+    }, [submitted, pending])
+
+    useEffect(() => {
+        let timer: any
+        
+        if (visible) {
+            console.log('visible')
+            timer = setTimeout(() => {
+                setAnimationClass('slide-out');
+                setVisible(false);     
+            }, 3000);
+            
+        }
+        return () => clearTimeout(timer);
+    }, [visible])
 
   return (
     
       <div
       className={`fixed top-2 right-2 z-20 py-2 px-4 rounded shadow-lg transition-transform duration-500 ease-in-out
-      ${animationClass} ${!visible ? 'opacity-0' : 'opacity-100'}
+      ${animationClass} ${visible ? 'opacity-0' : 'opacity-100'}
       bg-red-600 text-white`}
     >
-        {'Soomething went wrong'}
+        {'Something went wrong'}
       </div>
     )
 

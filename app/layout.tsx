@@ -1,3 +1,4 @@
+import { ClientWrapper } from './components/ClientWrapper';
 import './globals.css';
 import { GeistSans } from 'geist/font/sans';
 // import { ClientWrapper } from './components/ClientWrapper';
@@ -25,9 +26,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={GeistSans.variable}>
-        {/* <ClientWrapper>{children}</ClientWrapper> */}
-        <div className="bg-[url('/videos/starbackground_video.gif')]">
-          {children}
+        
+        <div className="bg-[url('/videos/starbackground_video.gif')] bg-no-repeat bg-cover">
+        <ClientWrapper>{children}</ClientWrapper>
         </div>
         
       </body>

@@ -1,38 +1,59 @@
-import React from 'react';
+'use client'
+import React, { FormEvent, useState } from 'react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { createUser, getUser } from 'app/db';
+import { redirect, useRouter } from 'next/navigation';
 import { SubmitButton } from '@/app/components/submit-button';
+import axios from 'axios';
+import { signIn, useSession } from 'next-auth/react';
 
 
 export default function Signup() {
+  
+  const [name, setName] = useState('')
+  const [language, setLanguage] = useState('')
+  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('')
+  const [sayName, setSayName] = useState('')
+  const router = useRouter()
 
-  async function register(formData: FormData) {
-    'use server';
-    let name = formData.get('name') as string;
-    let email = formData.get('email') as string;
-    let password = formData.get('password') as string;
-    let language = formData.get('language') as string;
-    let sayName = formData.get('sayName') === 'on';
+  const session = useSession()
 
-    let user = await getUser(email);
+  console.log(session)
 
-    if (user.length > 0) {
-      return 'User already exists'; // TODO: Handle errors with useFormStatus
-      
-    } else {
-      await createUser(name, email, password, language, sayName);
-      redirect('/login');
+  async function register(evt: FormEvent<HTMLElement>) {
+    evt.preventDefault()
+    try{
+      const response = await axios.post('/api/register', {name, email, password, language})
+    //   if(response){
+    //   signIn("credentials", 
+    //     {
+    //       email: response.data.data.email,
+    //       password: password,
+    //       redirect: false,
+    //       callbackUrl: "/"
+    //     }
+    //   ).then((callback) => {
+    //     if(callback.ok){
+    //       console.log("Ok")
+    //     }
+    //   })
+    // }
+    if (response.status === 201){
+      router.push('/home/create')
     }
+    }catch (error){
+      console.log(error)
+    }
+
+    
   }
 
   return (
     <>
-    <div className="z-10 mt-8 w-full max-w-md px-4 text-center">
+    <div className="z-10 mt-8 w-full mx-auto max-w-md px-4 text-center">
         <h2 className="text-3xl font-bold mb-8">Create an account</h2>
-
         <form
-          action={register}
+        onSubmit={register}
           className="flex flex-col space-y-4"
         >
           <div className="bg-white rounded-lg p-4 mb-2">
@@ -40,6 +61,8 @@ export default function Signup() {
               <input
                 type="text"
                 name="name"
+                value={name}
+                onChange={evt => setName(evt.target.value)}
                 placeholder="Name"
                 className="w-full p-2 text-gray-800 border-b border-gray-300 focus:outline-none focus:border-purple-500"
                 required
@@ -48,6 +71,8 @@ export default function Signup() {
             <div className="mb-4">
               <select
                 name="language"
+                value={language}
+                onChange={evt => setLanguage(evt.target.value)}
                 className="w-full p-2 text-gray-800 border-b border-gray-300 focus:outline-none focus:border-purple-500"
                 required
               >
@@ -60,6 +85,8 @@ export default function Signup() {
               <input
                 type="email"
                 name="email"
+                value={email}
+                onChange={evt => setEmail(evt.target.value)}
                 placeholder="Email"
                 className="w-full p-2 text-gray-800 border-b border-gray-300 focus:outline-none focus:border-purple-500"
                 required
@@ -69,6 +96,8 @@ export default function Signup() {
               <input
                 type="password"
                 name="password"
+                value={password}
+                onChange={evt => setPassword(evt.target.value)}
                 placeholder="Password"
                 className="w-full p-2 text-gray-800 border-b border-gray-300 focus:outline-none focus:border-purple-500"
                 required
@@ -83,6 +112,8 @@ export default function Signup() {
               type="checkbox"
               name="sayName"
               id="sayName"
+              value={sayName}
+              onChange={evt => setSayName(evt.target.value)}
               className="mr-2 cursor-pointer"
             />
             <label htmlFor="sayName" className="text-gray-300">
@@ -95,9 +126,7 @@ export default function Signup() {
           <SubmitButton className="w-full py-2 px-4 bg-white text-black font-semibold rounded-full hover:bg-purple-100 transition duration-300">
             Let's Go
           </SubmitButton>
-          
       </form>
-      
       
     </div>
    
