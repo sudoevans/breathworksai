@@ -1,9 +1,9 @@
+import { db } from "@/app/lib/db"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { compare } from "bcrypt-ts"
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import type { Adapter } from 'next-auth/adapters'
-import db from "@/app/lib/db"
  
 const handler =  NextAuth({
   adapter: PrismaAdapter(db) as Adapter,

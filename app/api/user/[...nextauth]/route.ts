@@ -1,4 +1,4 @@
-import db from "@/app/lib/db";
+import { db } from "@/app/lib/db";
 import { hash } from "bcrypt-ts";
 import { NextResponse } from "next/server";
 

@@ -28,8 +28,8 @@ const BreathworkSession: React.FC = () => {
 
   const [guideAudios, setGuideAudios] = useState<Record<string, string>>({});
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const guideAudioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = useRef<any | null>(null);
+  const guideAudioRef = useRef<any | null>(null);
 
 
     // Preload all guide audios when the component mounts

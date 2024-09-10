@@ -116,7 +116,7 @@ export default function Signup() {
               onChange={evt => setSayName(evt.target.value)}
               className="mr-2 cursor-pointer"
             />
-            <label htmlFor="sayName" className="text-gray-300">
+            <label className="text-gray-300">
               Say my name in the journey.
             </label>
           </div>
