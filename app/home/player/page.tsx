@@ -18,10 +18,10 @@ const PlayerPage = () => {
     const [originalVolumes, setOriginalVolumes] = useState<number[]>(volumes);
     const [selectedVoice, setSelectedVoice] = useState<Voice  | undefined>();
 
-    const guideAudioRef = useRef<HTMLAudioElement | null>(null);
+    const guideAudioRef = useRef<any | null>(null);
   
-    const audioRefs = useRef<Array<React.RefObject<HTMLAudioElement>>>(
-        tracks.map(() => React.createRef<HTMLAudioElement>())
+    const audioRefs = useRef<Array<React.RefObject<any>>>(
+        tracks.map(() => React.createRef<any>())
       );
     
       useEffect(() => {

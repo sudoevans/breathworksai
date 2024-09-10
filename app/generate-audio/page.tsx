@@ -19,7 +19,7 @@ const BreathworkSession: React.FC = () => {
   const [selectedPurpose, setSelectedPurpose] = useState<Purpose>('Be happy');
   const [progress, setProgress] = useState<number>(0);
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = useRef<any | null>(null);
 
   // useEffect(() => {
   //   if (status === 'unauthenticated') {
