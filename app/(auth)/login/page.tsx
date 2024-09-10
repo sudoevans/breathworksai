@@ -2,13 +2,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { SubmitButton } from '@/app/components/submit-button';
-import Logo from '../../components/Logo';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from '@/app/lib/auth';
 
 export default function Login() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
   // const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
