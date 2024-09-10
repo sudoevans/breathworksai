@@ -193,7 +193,7 @@ const BreathworkSession: React.FC = () => {
   
 
   return (
-    <div>
+    <div className='pt-4 pb-[5rem] px-4'>
       <div className='w-full justify-between flex items-center'>
         <div className='border-[#9333ea] rounded-full w-fit border-[3px]'>
         <HomeIcon />

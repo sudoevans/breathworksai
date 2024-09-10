@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-   
+    <html lang="en">
       <body className={GeistSans.variable}>
         
         <div className="bg-[url('/videos/starbackground_video.gif')] bg-no-repeat bg-cover">
@@ -32,5 +32,6 @@ export default function RootLayout({
         </div>
         
       </body>
+    </html>
   );
 }
