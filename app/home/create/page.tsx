@@ -131,9 +131,11 @@ const BreathworkSession: React.FC = () => {
 
   const handleMusicChange = (music: Music) => {
     
+    audioRef.current.pause()
+    guideAudioRef.current.pause()
+    
     const musicUrl = tracks.find(item => item.label === music.toLowerCase()).url
     setSelectedMusic({label: music, url: musicUrl});
-    audioRef.current.pause()
     if (musicRef.current.src === musicUrl && !musicRef.current.paused){
       musicRef.current.pause()
       return
@@ -150,12 +152,13 @@ const BreathworkSession: React.FC = () => {
   };
 
   const handlePurposeChange = (purpose: Purpose) => {
+    audioRef.current.pause()
+    guideAudioRef.current.pause()
+    musicRef.current.pause()
     setSelectedPurpose(purpose);
   };
 
   const handleCreate = () => {
-
-    console.log(session)
     // Simulate progress
     if(session){
       let currentProgress = 0;
@@ -179,11 +182,10 @@ const BreathworkSession: React.FC = () => {
 
   const handleVoiceChange = (voice: any, index: any) => {
     guideAudioRef?.current?.pause()
+    musicRef.current.pause()
     setSelectedVoice(voice);
     setPosition(index + 1);
     const parsedMessages = JSON.parse(JSON.stringify(messages));
-    console.log(parsedMessages[voice])
-    console.log(loadFromLocalStorage('selections')?.language?.toLowerCase())
     const newString = replacePlaceholder(parsedMessages[voice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'en'], loadFromLocalStorage('selections')?.name);
 
     // If audio for selected voice isn't preloaded yet, fetch it immediately
@@ -240,6 +242,7 @@ const BreathworkSession: React.FC = () => {
   const handleVoiceSelection = (voice) => {
     guideAudioRef.current?.pause()
     audioRef.current?.pause()
+    musicRef.current.pause()
     // save selected voice to local storage
     saveToLocalStorage('audio', {"voice-guide": guideAudioRef.current.src, "name": selectedVoice})
   }
@@ -325,7 +328,7 @@ const BreathworkSession: React.FC = () => {
       </div>
       
     </div>
-    <div className='-mt-[2.5rem] mb-4 bg-purple-600 capitalize flex justify-center items-center min-w-[10rem] mx-auto py-2 rounded-full text-black w-fit font-semibold tracking-wider px-7 text-2xl' onClick={handleVoiceSelection}>{selectedVoice}</div>
+    <div className='-mt-[2.5rem] mb-4 bg-purple-600 capitalize cursor-pointer flex justify-center items-center min-w-[10rem] mx-auto py-2 rounded-full text-black w-fit font-semibold tracking-wider px-7 text-2xl' onClick={handleVoiceSelection}>{selectedVoice}</div>
             <p className="text-center mt-2 font-light tracking-wide text-lg">{selectedVoice} is our most popular guide</p>
           </div>
 
