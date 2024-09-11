@@ -252,13 +252,13 @@ const BreathworkSession: React.FC = () => {
     saveToLocalStorage('audio', {"voice-guide": guideAudioRef.current.src, "name": selectedVoice})
   }
   
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!session){
-        router.push('/register')
-      }
-    }, 3000)
-  }, [])
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     if (!session){
+  //       router.push('/register')
+  //     }
+  //   }, 3000)
+  // }, [])
 
   return (
     <div className='pt-4 pb-[5rem] px-4'>
@@ -290,6 +290,7 @@ const BreathworkSession: React.FC = () => {
         grabCursor={true}
         centeredSlides={true}
         slidesPerView={3}
+        initialSlide={1}
         coverflowEffect={{
           rotate: 60,
           stretch: 20,
@@ -329,6 +330,7 @@ const BreathworkSession: React.FC = () => {
         grabCursor={true}
         centeredSlides={true}
         slidesPerView={3}
+        initialSlide={1}
         coverflowEffect={{
           rotate: 60,
           stretch: 20,
@@ -374,6 +376,7 @@ const BreathworkSession: React.FC = () => {
         grabCursor={true}
         centeredSlides={true}
         slidesPerView={3}
+        initialSlide={1}
         coverflowEffect={{
           rotate: 60,
           stretch: 20,
