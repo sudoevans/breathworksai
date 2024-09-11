@@ -1,10 +1,11 @@
 'use client'
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { redirect, useRouter } from 'next/navigation';
 import { SubmitButton } from '@/app/components/submit-button';
 import axios from 'axios';
 import { signIn, useSession } from 'next-auth/react';
+import { loadFromLocalStorage } from 'utils/localStorage';
 
 
 export default function Signup() {
@@ -38,6 +39,12 @@ export default function Signup() {
 
     
   }
+
+  useEffect(() => {
+    const {name, language}  = loadFromLocalStorage('selections')
+    setName(name)
+    setLanguage(language)
+  }, [])
 
   return (
     <>
