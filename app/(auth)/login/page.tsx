@@ -11,7 +11,8 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const router = useRouter()
   const [error, setError] = useState('')
-  const session = useSession()
+  const {status} = useSession()
+  
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -65,7 +66,9 @@ export default function Login() {
             </p>
           </div>
           <SubmitButton className="w-full bg-white text-purple-900 py-3 rounded-full font-semibold hover:bg-purple-100 transition duration-300">
-            Lets Go
+            {
+              status === 'loading' ? "Loading..." : "Lets Go"
+            }
           </SubmitButton>
         </form>
       </div>
