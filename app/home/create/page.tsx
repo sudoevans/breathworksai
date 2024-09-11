@@ -306,7 +306,7 @@ const BreathworkSession: React.FC = () => {
             <p className="text-center mt-2 font-light tracking-wide text-lg">{selectedVoice} is our most popular guide</p>
           </div>
 
-          <div className='pt-5 px-10 space-y-4'>
+          <div className='pt-5 px-4 space-y-4'>
             <div className='w-fit flex items-center gap-x-4 mx-auto'>
               <div className='border-[#9333ea] rounded-full w-fit border-2'>
                 <SoundIcon/>
@@ -330,7 +330,7 @@ const BreathworkSession: React.FC = () => {
             <p className="text-center mt-2 font-light tracking-wide text-lg">Gives you energy boost and the strength to fight.</p>
           </div>
 
-          <div className='pt-5 px-10 space-y-4'>
+          <div className='pt-5 px-4 space-y-4'>
             <div className='w-fit flex items-center gap-x-4 mx-auto'>
               <div className='border-[#9333ea] p-1 rounded-full w-fit border-2'>
                 <MusicIcon/>

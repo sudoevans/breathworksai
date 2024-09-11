@@ -20,17 +20,28 @@ const PlayerPage = () => {
 
     const [username, setUsername] = useState('')
     const guideAudioRef = useRef<any | null>(null);
+    
   
     const audioRefs = useRef<Array<React.RefObject<any>>>(
         tracks.map(() => React.createRef<any>())
       );
     
       useEffect(() => {
-        setUsername(loadFromLocalStorage('selections')?.name || '')
-        const info = loadFromLocalStorage('audio')
-        setSelectedVoice(info.name)
-
-      }, [])
+        // Load username from local storage
+        setUsername(loadFromLocalStorage('selections')?.name || '');
+    
+        // Load the selected voice guide
+        const info = loadFromLocalStorage('audio');
+        setSelectedVoice(info.name);
+    
+        // Load audio sources for each track and set them to their respective audioRefs
+        audioRefs.current.forEach((ref, index) => {
+          const trackSource = loadFromLocalStorage(`audio`)?.[`track-${index}`];
+          if (ref.current && trackSource) {
+            ref.current.src = trackSource;  // Set the source from local storage
+          }
+        });
+      }, []);
 
       const handlePlayPause = () => {
         setIsPlaying(prev => !prev);
@@ -100,7 +111,6 @@ const PlayerPage = () => {
 
       const playGuidance = () => {
         const audioElement = guideAudioRef.current;
-        console.log(audioElement)
         if (audioElement) {
           // Check if audio is playing
           if (!audioElement.paused) {
@@ -114,6 +124,7 @@ const PlayerPage = () => {
           }
         }
       };
+      
 
       
   return (
