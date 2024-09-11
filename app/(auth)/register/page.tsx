@@ -16,30 +16,21 @@ export default function Signup() {
   const [sayName, setSayName] = useState('')
   const router = useRouter()
 
-  const session = useSession()
-
-  console.log(session)
 
   async function register(evt: FormEvent<HTMLElement>) {
     evt.preventDefault()
     try{
       const response = await axios.post('/api/register', {name, email, password, language})
-    //   if(response){
-    //   signIn("credentials", 
-    //     {
-    //       email: response.data.data.email,
-    //       password: password,
-    //       redirect: false,
-    //       callbackUrl: "/"
-    //     }
-    //   ).then((callback) => {
-    //     if(callback.ok){
-    //       console.log("Ok")
-    //     }
-    //   })
-    // }
-    if (response.status === 201){
-      router.push('/home/create')
+      if(response){
+        signIn('credentials', {
+          email,
+          password,
+          redirect: false
+        }).then((callback) => {
+        if(callback.ok){
+          router.push('/home/create')
+        }
+      })
     }
     }catch (error){
       console.log(error)

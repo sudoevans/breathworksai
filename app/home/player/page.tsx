@@ -18,6 +18,7 @@ const PlayerPage = () => {
     const [originalVolumes, setOriginalVolumes] = useState<number[]>(volumes);
     const [selectedVoice, setSelectedVoice] = useState<Voice  | undefined>();
 
+    const [username, setUsername] = useState('')
     const guideAudioRef = useRef<any | null>(null);
   
     const audioRefs = useRef<Array<React.RefObject<any>>>(
@@ -25,6 +26,7 @@ const PlayerPage = () => {
       );
     
       useEffect(() => {
+        setUsername(loadFromLocalStorage('selections')?.name || '')
         const info = loadFromLocalStorage('audio')
         setSelectedVoice(info.name)
 
@@ -112,12 +114,13 @@ const PlayerPage = () => {
           }
         }
       };
+
       
   return (
     <div>
     
     <div className="z-10 w-full bg-player-bg h-screen md:h-auto md:min-h-[48.625rem] pt-[10rem] flex flex-col justify-center gap-y-6 items-center max-w-md p-6 space-y-8">
-    <p>{selectedVoice && `Speech of ${selectedVoice}`}</p>
+    <p>{selectedVoice && `Speech of ${username !== "" ? (username  + " "): ""} ${selectedVoice}`}</p>
       <div className="flex items-center gap-x-10 mb-4">
         <button onClick={handleRewind}>
         <svg className="svg-icon" style={{width: "2rem", height: "2rem", verticalAlign: "middle", fill: "#AE9BCE", overflow: "hidden"}} viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M356.266667 492.8l281.6-281.6c10.666667-10.666667 21.333333-14.933333 27.733333-10.666667s12.8 12.8 12.8 27.733334v569.6c0 14.933333-4.266667 25.6-12.8 27.733333s-17.066667 0-27.733333-10.666667l-281.6-281.6c-4.266667-4.266667-8.533333-12.8-8.533334-19.2 0-10.666667 2.133333-17.066667 8.533334-21.333333z"  /></svg>

@@ -13,7 +13,6 @@ const fetchWithRetry = async (fetchFn: () => Promise<any>, retries: number): Pro
     return await fetchFn();
   } catch (error: any) {
     if (retries > 0 && error.name !== 'AbortError') {
-      console.log(`Retrying... attempts left: ${retries}`);
       return fetchWithRetry(fetchFn, retries - 1);
     }
     throw error;
@@ -50,13 +49,11 @@ export async function POST(req: Request) {
     });
   } catch (error: any) {
     if (error.name === 'AbortError') {
-      console.log('Request aborted');
       return new Response(JSON.stringify({ error: 'Request aborted' }), {
         status: 499,
         headers: { "Content-Type": "application/json" }
       });
     }
-    console.error('Error generating audio:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: error.statusCode || 500,
       headers: { "Content-Type": "application/json" }

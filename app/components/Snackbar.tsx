@@ -19,9 +19,7 @@ const Snackbar = () => {
     
     useEffect(() => {
         let timer: any
-        console.log('pending', pending, submitted)
         if (submitted && !pending) {
-            console.log('After submit')
             timer = setTimeout(() => {
                 setVisible(true);
                 setAnimationClass('slide-in');
@@ -35,7 +33,6 @@ const Snackbar = () => {
         let timer: any
         
         if (visible) {
-            console.log('visible')
             timer = setTimeout(() => {
                 setAnimationClass('slide-out');
                 setVisible(false);     

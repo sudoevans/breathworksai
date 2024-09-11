@@ -8,15 +8,14 @@ import type { Adapter } from 'next-auth/adapters'
 const handler =  NextAuth({
   adapter: PrismaAdapter(db) as Adapter,
   pages: {
-    signIn: '/auth/signin',
-    error: '/auth/error',  // Error page
+    signIn: '/login',
   },
   debug: process.env.NODE_ENV === "development",
   session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     Credentials({
-      name: 'Sign in',
+      name: 'signin',
       credentials: {
         email: {
           label: 'Email',
@@ -25,6 +24,7 @@ const handler =  NextAuth({
         password: { label: 'Password', type: 'password' }
       },
       authorize: async (credentials, req) => {
+        
         if (!credentials?.email || !credentials?.password) {
             throw new Error("Invalid email or password");
           }
@@ -48,6 +48,7 @@ const handler =  NextAuth({
         
           // Return the full user object or necessary fields
           return {
+            id: user.id,
             email: user.email,
             name: user.name,
             say_name: user.say_name,
@@ -59,22 +60,19 @@ const handler =  NextAuth({
     
   ],
   callbacks: {
-    async jwt({ token, user }) {
-        console.log("I am", user, token)
-        const isSignIn = user ? true : false;
-        // if (isSignIn) {
-        //   token.jwt = user.jwt;
-        //   token.id = user.user.id;
-        //   token.username = user.user.username;
-        // }
-        return Promise.resolve(token);
+    async jwt({ token, user, trigger, session }) {
+      if (user) {
+        token.user = user;
+      }
+      if (trigger === "update" && session) {
+        token = {...token, user : session}
+        return token;
+      };
+      return token;
     },
     async session({ session, token,  user }: any) {
-        console.log("SESSION callback", session, user, token)
-        // session.jwt = user.jwt;
-        // session.id = user.id;
-        // session.username = user.username;
-        return Promise.resolve(token);
+        session.user = {...token}
+        return session;
     }
   }
 })

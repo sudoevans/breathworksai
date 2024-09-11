@@ -309,7 +309,7 @@ const BreathworkSession: React.FC = () => {
             <h2 className="text-xl mb-2">3. Select Purpose</h2>
             </div>
             <div className="flex justify-between">
-              {['Space', 'Be happy', 'Focus'].map((purpose) => (
+              {['Focus', 'Be happy', 'Focus'].map((purpose) => (
                 <button
                   key={purpose}
                   className={`px-4 py-2 rounded-lg transition-opacity duration-300 ${

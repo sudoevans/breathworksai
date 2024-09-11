@@ -2,29 +2,29 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { SubmitButton } from '@/app/components/submit-button';
-import { signIn } from '@/app/lib/auth';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
   // const callbackUrl = searchParams.get('callbackUrl') || '/dashboard'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const router = useRouter()
   const [error, setError] = useState('')
+  const session = useSession()
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const res = await signIn('credentials', {
-        redirect: false,
+      signIn('credentials', {
         email,
         password,
-        // callbackUrl
-      })
-      console.log('Res', res)
-      if (!res?.error) {
-        // router.push(callbackUrl)
-      } else {
+        redirect: false
+      }).then(val => {
+        router.push('/home/create')
+      }).catch(err => {
         setError('Invalid email or password')
-      }
+      })
     } catch (err: any) {}
   }
   return (
