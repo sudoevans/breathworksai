@@ -232,7 +232,13 @@ const PlayerPage = () => {
           }
         }
       };
-
+      const disableScroll = () => {
+        document.body.classList.add('no-scroll');
+      };
+    
+      const enableScroll = () => {
+        document.body.classList.remove('no-scroll');
+      };
       
   return (
     <div>
@@ -265,6 +271,10 @@ const PlayerPage = () => {
         min="0"
         max="1"
         step="0.01"
+        onMouseDown={disableScroll} // Disable scroll on mouse down
+        onMouseUp={enableScroll}    // Enable scroll back on mouse up
+        onTouchStart={disableScroll} // Disable scroll on touch start (mobile)
+        onTouchEnd={enableScroll}    // Enable scroll back on touch end (mobile)
         value={masterVolume}
         onChange={handleMasterVolumeChange}
         className="w-full self-center mt-4 cursor-pointer range-input mb-4"
@@ -304,6 +314,10 @@ const PlayerPage = () => {
         min="0"
         max="1"
         step="0.01"
+        onMouseDown={disableScroll} // Disable scroll on mouse down
+        onMouseUp={enableScroll}    // Enable scroll back on mouse up
+        onTouchStart={disableScroll} // Disable scroll on touch start (mobile)
+        onTouchEnd={enableScroll}    // Enable scroll back on touch end (mobile)
         value={volumes[0]}
         onChange={(e) => handleVolumeChange('voiceData', e)}
         className="range-sub-input transform -rotate-90 w-24 h-6"
@@ -320,6 +334,10 @@ const PlayerPage = () => {
         min="0"
         max="1"
         step="0.01"
+        onMouseDown={disableScroll} // Disable scroll on mouse down
+        onMouseUp={enableScroll}    // Enable scroll back on mouse up
+        onTouchStart={disableScroll} // Disable scroll on touch start (mobile)
+        onTouchEnd={enableScroll}    // Enable scroll back on touch end (mobile)
         value={volumes[1]}
         onChange={(e) => handleVolumeChange('music', e)}
         className="range-sub-input transform -rotate-90 w-24 h-6"
@@ -337,6 +355,10 @@ const PlayerPage = () => {
         max="1"
         step="0.01"
         value={volumes[2]}
+        onMouseDown={disableScroll} // Disable scroll on mouse down
+        onMouseUp={enableScroll}    // Enable scroll back on mouse up
+        onTouchStart={disableScroll} // Disable scroll on touch start (mobile)
+        onTouchEnd={enableScroll}    // Enable scroll back on touch end (mobile)
         onChange={(e) => handleVolumeChange('purpose', e)}
         className="range-sub-input transform -rotate-90 w-24 h-6"
         style={{ transformOrigin: 'center center' }}
@@ -352,6 +374,10 @@ const PlayerPage = () => {
         min="0"
         max="1"
         step="0.01"
+        onMouseDown={disableScroll} // Disable scroll on mouse down
+        onMouseUp={enableScroll}    // Enable scroll back on mouse up
+        onTouchStart={disableScroll} // Disable scroll on touch start (mobile)
+        onTouchEnd={enableScroll}    // Enable scroll back on touch end (mobile)
         value={volumes[0]}
         onChange={(e) => handleVolumeChange('voiceData', e)}
         className="range-sub-input transform -rotate-90 w-24 h-6"
@@ -359,24 +385,6 @@ const PlayerPage = () => {
       />
     </div>
 
-  {/* {tracks.map((track, index) => (
-    <div key={index} className="flex flex-col items-center flex-grow">
-        <div className='rounded-full mb-12 border-2 border-[#AE9BCE]'>
-        <svg height="36" viewBox="0 0 48 48" width="36" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h48v48H0z" fill="none"/><path d="M30 12H6v4h24v-4zm0 8H6v4h24v-4zM6 32h16v-4H6v4zm28-20v16.37c-.63-.23-1.29-.37-2-.37-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6V16h6v-4H34z" fill='#AE9BCE'/></svg>
-        </div>
-      <audio ref={audioRefs.current[index]} data-index={index} />
-      <input
-        type="range"
-        min="0"
-        max="1"
-        step="0.01"
-        value={volumes[index]}
-        onChange={(e) => handleVolumeChange(index, e)}
-        className="range-sub-input transform -rotate-90 w-24 h-6"
-        style={{ transformOrigin: 'center center' }}
-      />
-    </div>
-  ))} */}
 </div>
 <div className='mt-4 py-6 text-left w-full'>
         <div className='py-4 -mx-6 px-6 border-b-2 border-[#AE9BCE] flex gap-x-3 items-center'>

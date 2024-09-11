@@ -231,3 +231,6 @@ input:nth-of-type(3):checked ~ #carousel {
     transform: rotateY(calc(-10deg * var(--r))) translateX(calc(-250px * var(--r)));
     z-index: calc(var(--position) - var(--abs));
   }
+  .no-scroll {
+    overflow: hidden;
+  }
