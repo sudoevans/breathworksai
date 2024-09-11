@@ -11,6 +11,11 @@ import messages from '../../../sample-voice.json';
 import { loadFromLocalStorage, saveToLocalStorage } from 'utils/localStorage';
 import { replacePlaceholder } from 'utils/replacebuilder';
 import { useSession } from 'next-auth/react';
+import {Swiper, SwiperSlide} from 'swiper/react';
+import { EffectCoverflow, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
 
 // Define types for our selections
 type Voice = 'Ryan' | 'Jenny' | 'Amelia' | 'Christopher';
@@ -247,6 +252,13 @@ const BreathworkSession: React.FC = () => {
     saveToLocalStorage('audio', {"voice-guide": guideAudioRef.current.src, "name": selectedVoice})
   }
   
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     if (!session){
+  //       router.push('/register')
+  //     }
+  //   }, 3000)
+  // }, [])
 
   return (
     <div className='pt-4 pb-[5rem] px-4'>
@@ -271,9 +283,9 @@ const BreathworkSession: React.FC = () => {
               <h2 className="text-xl">1. Select Voice</h2>
             </div>
             
-            <div className="grid h-[20rem] mt-[6rem] grid-cols-6 items-center justify-items-center grid-rows-2">
+            {/* <div className="grid h-[20rem] mt-[6rem] grid-cols-6 items-center justify-items-center grid-rows-2"> */}
       {/* Radio Buttons */}
-      <input
+      {/* <input
         type="radio"
         name="position"
         className='w-4 h-4 cursor-pointer'
@@ -301,10 +313,10 @@ const BreathworkSession: React.FC = () => {
         className='w-4 h-4 cursor-pointer'
         checked={position === 4}
         onChange={() => setPosition(4)}
-      />
+      /> */}
 
       {/* Carousel */}
-      <div id="carousel">
+      {/* <div id="carousel">
         {voices.map((voice, index) => (
           <div
             key={voice}
@@ -325,10 +337,38 @@ const BreathworkSession: React.FC = () => {
           </div>
         ))}
         
-      </div>
+      </div> */}
       
+    {/* </div> */}
+
+    <div className='h-[16rem] -mx-10 flex items-center'>
+      <Swiper
+        effect={'coverflow'}
+        grabCursor={true}
+        centeredSlides={true}
+        slidesPerView={3}
+        coverflowEffect={{
+          rotate: 60,
+          stretch: 20,
+          depth: 10,
+          modifier: 1,
+          slideShadows: true,
+        }}
+        pagination={true}
+        modules={[EffectCoverflow, Pagination]}
+        className="mySwiper"
+      >
+         {voices.map((voice, index) => (
+            <SwiperSlide zoom key={index} virtualIndex={index} onClick={() => handleVoiceChange(voice, index)}>
+          <img src={`/images/${voice.toLowerCase()}.png`} className='h-[14rem] rounded-lg bg-[#0d1c2a92]' />
+        </SwiperSlide>
+         )
+        )}
+        
+       
+      </Swiper>
     </div>
-    <div className='-mt-[2.5rem] mb-4 bg-purple-600 capitalize cursor-pointer flex justify-center items-center min-w-[10rem] mx-auto py-2 rounded-full text-black w-fit font-semibold tracking-wider px-7 text-2xl' onClick={handleVoiceSelection}>{selectedVoice}</div>
+    <div className='mt-8 mb-4 bg-purple-600 capitalize cursor-pointer flex justify-center items-center min-w-[10rem] mx-auto py-2 rounded-full text-black w-fit font-semibold tracking-wider px-7 text-2xl' onClick={handleVoiceSelection}>{selectedVoice}</div>
             <p className="text-center mt-2 font-light tracking-wide text-lg">{selectedVoice} is our most popular guide</p>
           </div>
 
