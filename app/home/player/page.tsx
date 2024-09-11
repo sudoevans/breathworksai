@@ -109,9 +109,12 @@ const PlayerPage = () => {
         fetchMusicCollections()
     
       }, []);
+
       const handlePlayPause = () => {
         setIsPlaying(prev => !prev);
         const { music, purpose } = audioRefs.current;
+
+        console.log(music)
     
         if (music.current) {
           if (isPlaying) {
