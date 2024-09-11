@@ -162,9 +162,15 @@ const PlayerPage = () => {
     }
       };
     
-      const handleVolumeChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+      const handleVolumeChange = (index: string, e: React.ChangeEvent<HTMLInputElement>) => {
         const volume = parseFloat(e.target.value);
-        setVolumes(volumes.map((vol, i) => (i === index ? volume : vol)));
+        const allInfo = {
+          'voiceData': 0,
+          "music": 1,
+          "purpose": 2
+        }
+        const selected = 
+        setVolumes(volumes.map((vol, i) => (i === allInfo[index] ? volume : vol)));
         if (audioRefs.current[index].current) {
           audioRefs.current[index].current.volume = isMuted ? 0 : masterVolume * volume;
         }
@@ -295,7 +301,7 @@ const PlayerPage = () => {
         max="1"
         step="0.01"
         value={volumes[0]}
-        onChange={(e) => {}}
+        onChange={(e) => handleVolumeChange('voiceData', e)}
         className="range-sub-input transform -rotate-90 w-24 h-6"
         style={{ transformOrigin: 'center center' }}
       />
@@ -311,7 +317,7 @@ const PlayerPage = () => {
         max="1"
         step="0.01"
         value={volumes[1]}
-        onChange={(e) => {}}
+        onChange={(e) => handleVolumeChange('music', e)}
         className="range-sub-input transform -rotate-90 w-24 h-6"
         style={{ transformOrigin: 'center center' }}
       />
@@ -326,8 +332,8 @@ const PlayerPage = () => {
         min="0"
         max="1"
         step="0.01"
-        value={volumes[3]}
-        onChange={(e) => {}}
+        value={volumes[2]}
+        onChange={(e) => handleVolumeChange('purpose', e)}
         className="range-sub-input transform -rotate-90 w-24 h-6"
         style={{ transformOrigin: 'center center' }}
       />
@@ -342,8 +348,8 @@ const PlayerPage = () => {
         min="0"
         max="1"
         step="0.01"
-        value={volumes[1]}
-        onChange={(e) => {}}
+        value={volumes[0]}
+        onChange={(e) => handleVolumeChange('voiceData', e)}
         className="range-sub-input transform -rotate-90 w-24 h-6"
         style={{ transformOrigin: 'center center' }}
       />
