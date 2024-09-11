@@ -252,13 +252,13 @@ const BreathworkSession: React.FC = () => {
     saveToLocalStorage('audio', {"voice-guide": guideAudioRef.current.src, "name": selectedVoice})
   }
   
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     if (!session){
-  //       router.push('/register')
-  //     }
-  //   }, 3000)
-  // }, [])
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!session){
+        router.push('/register')
+      }
+    }, 3000)
+  }, [])
 
   return (
     <div className='pt-4 pb-[5rem] px-4'>
