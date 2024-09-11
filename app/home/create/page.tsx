@@ -360,7 +360,7 @@ const BreathworkSession: React.FC = () => {
       >
          {voices.map((voice, index) => (
             <SwiperSlide zoom key={index} virtualIndex={index} onClick={() => handleVoiceChange(voice, index)}>
-          <img src={`/images/${voice.toLowerCase()}.png`} className='h-[14rem] rounded-lg bg-[#0d1c2a92]' />
+          <img src={`/images/${voice.toLowerCase()}.png`} className='h-[14rem] rounded-2xl bg-[#0d1c2a92]' />
         </SwiperSlide>
          )
         )}
@@ -380,9 +380,25 @@ const BreathworkSession: React.FC = () => {
               <h2 className="text-xl mb-2">2. Select Music</h2>
             </div>
             
-            <div className="flex justify-between">
-              {['Space', 'Hip hop', 'Techno'].map((music) => (
-                <button
+            <div className='h-16'>
+                  <Swiper
+        effect={'coverflow'}
+        grabCursor={true}
+        centeredSlides={true}
+        slidesPerView={3}
+        coverflowEffect={{
+          rotate: 60,
+          stretch: 20,
+          depth: 10,
+          modifier: 1,
+          slideShadows: true,
+        }}
+        modules={[EffectCoverflow]}
+        className="mySwiper"
+      >
+         {['Space', 'Hip hop', 'Techno'].map((music, index) => (
+            <SwiperSlide zoom key={index} virtualIndex={index} onClick={() => handleMusicChange(music as Music)}>
+         <button
                   key={music}
                   className={`min-w-[6rem] py-2 rounded-lg transition-opacity duration-300 ${
                     selectedMusic.label === music ? 'bg-purple-600 opacity-100' : 'bg-purple-800 opacity-50'
@@ -391,8 +407,13 @@ const BreathworkSession: React.FC = () => {
                 >
                   {music}
                 </button>
-              ))}
-            </div>
+        </SwiperSlide>
+         )
+        )}
+        
+       
+      </Swiper>
+      </div>
             <p className="text-center mt-2 font-light tracking-wide text-lg">Gives you energy boost and the strength to fight.</p>
           </div>
 
@@ -403,18 +424,40 @@ const BreathworkSession: React.FC = () => {
               </div>
             <h2 className="text-xl mb-2">3. Select Purpose</h2>
             </div>
-            <div className="flex justify-between">
-              {['Focus', 'Be happy', 'Sleep Better'].map((purpose) => (
-                <button
+
+<div className='h-16'>
+                  <Swiper
+        effect={'coverflow'}
+        grabCursor={true}
+        centeredSlides={true}
+        slidesPerView={3}
+        coverflowEffect={{
+          rotate: 60,
+          stretch: 20,
+          depth: 10,
+          modifier: 1,
+          slideShadows: true,
+        }}
+        modules={[EffectCoverflow]}
+        className="mySwiper"
+      >
+         {['Focus', 'Be happy', 'Sleep Better'].map((purpose, index) => (
+            <SwiperSlide zoom key={index} virtualIndex={index} onClick={() => handlePurposeChange(purpose as Purpose)}>
+         <button
                   key={purpose}
                   className={`min-w-[6rem] py-2 rounded-lg transition-opacity duration-300 ${
                     selectedPurpose === purpose ? 'bg-purple-600 opacity-100' : 'bg-purple-800 opacity-50'
                   }`}
-                  onClick={() => handlePurposeChange(purpose as Purpose)}
+                  
                 >
                   {purpose}
                 </button>
-              ))}
+        </SwiperSlide>
+         )
+        )}
+        
+       
+      </Swiper>
             </div>
             <p className="text-center mt-2 font-light tracking-wide text-lg">Gives you energy boost and the strength to fight.</p>
           </div>
