@@ -23,7 +23,7 @@ const tracks = [
     url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
   },
   {
-    label: 'focus',
+    label: 'space',
     url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'
   },
   {
@@ -114,13 +114,20 @@ const BreathworkSession: React.FC = () => {
 
   const handleMusicChange = (music: Music) => {
     setSelectedMusic(music);
-    musicRef.current.src = tracks.find(item => item.label === music.toLowerCase()).url
-    if(!!musicRef.current?.paused){
-      musicRef.current.play()
-    }else{
+    const musicUrl = tracks.find(item => item.label === music.toLowerCase()).url
+    if (musicRef.current.src === musicUrl && !musicRef.current.paused){
       musicRef.current.pause()
+      return
     }
-    // console.log(tracks.find(item => item.label === music.toLowerCase()))
+    if(musicRef.current){
+      musicRef.current.src = musicUrl
+      
+    }
+    if((musicRef.current.src === musicUrl && musicRef.current.paused)){
+      musicRef.current.play()
+      }else{
+        musicRef.current.pause()
+      }
   };
 
   const handlePurposeChange = (purpose: Purpose) => {
@@ -368,6 +375,7 @@ const BreathworkSession: React.FC = () => {
       </div>
 
       <audio ref={audioRef} />
+      <audio ref={musicRef} />
       <audio ref={guideAudioRef} />
     </div>
   );
