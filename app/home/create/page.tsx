@@ -415,8 +415,7 @@ const BreathworkSession: React.FC = () => {
         >
           Create
         </button>
-        {progress > 0 && progress < 100 && (
-          <div className="w-full bg-white overflow-hidden rounded-full h-[60px] dark:bg-white">
+          <div className={`w-full bg-white ${progress <= 0 && 'opacity-50' } overflow-hidden rounded-full h-[60px] dark:bg-white`}>
             <div
               className="bg-[#0091ff] h-full flex items-center justify-center"
               style={{ width: `${progress}%` }}
@@ -424,8 +423,7 @@ const BreathworkSession: React.FC = () => {
               {progress}%
             </div>
           </div>
-        )}
-        </div>
+          </div>
 
         
       </div>
