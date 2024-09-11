@@ -38,7 +38,7 @@ const BreathworkSession: React.FC = () => {
   const router = useRouter();
   
   const [selectedVoice, setSelectedVoice] = useState<Voice>('Ryan');
-  const [selectedMusic, setSelectedMusic] = useState<Music>('Hip hop');
+  const [selectedMusic, setSelectedMusic] = useState<any>({label: 'Hip hop', url: ''});
   const [selectedPurpose, setSelectedPurpose] = useState<Purpose>('Be happy');
   const [progress, setProgress] = useState<number>(0);
   const [position, setPosition] = useState(2);
@@ -113,8 +113,9 @@ const BreathworkSession: React.FC = () => {
 
 
   const handleMusicChange = (music: Music) => {
-    setSelectedMusic(music);
+    
     const musicUrl = tracks.find(item => item.label === music.toLowerCase()).url
+    setSelectedMusic({label: music, url: musicUrl});
     if (musicRef.current.src === musicUrl && !musicRef.current.paused){
       musicRef.current.pause()
       return
@@ -138,6 +139,7 @@ const BreathworkSession: React.FC = () => {
     // Simulate progress
     if(session){
       let currentProgress = 0;
+      saveToLocalStorage('collection', {"music": selectedMusic})
     const interval = setInterval(() => {
       currentProgress += 10;
       setProgress(currentProgress);
@@ -317,7 +319,7 @@ const BreathworkSession: React.FC = () => {
                 <button
                   key={music}
                   className={`min-w-[6rem] py-2 rounded-lg transition-opacity duration-300 ${
-                    selectedMusic === music ? 'bg-purple-600 opacity-100' : 'bg-purple-800 opacity-50'
+                    selectedMusic.label === music ? 'bg-purple-600 opacity-100' : 'bg-purple-800 opacity-50'
                   }`}
                   onClick={() => handleMusicChange(music as Music)}
                 >
