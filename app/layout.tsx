@@ -1,11 +1,10 @@
 import { ClientWrapper } from './components/ClientWrapper';
 import './globals.css';
 import { GeistSans } from 'geist/font/sans';
-// import { ClientWrapper } from './components/ClientWrapper';
 
-let title = 'Next.js + Postgres Auth Starter';
+let title = 'Personalized Breathwork';
 let description =
-  'This is a Next.js starter kit that uses NextAuth.js for simple email + password login and a Postgres database to persist the data.';
+  'Tailored breathwork sessions designed to improve sleep, reduce stress, and enhance overall well-being.';
 
 export const metadata = {
   title,
@@ -15,7 +14,7 @@ export const metadata = {
     title,
     description,
   },
-  metadataBase: new URL('https://nextjs-postgres-auth.vercel.app'),
+  metadataBase: new URL('https://breathworksai.vercel.app/'),
 };
 
 export default function RootLayout({
@@ -26,11 +25,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={GeistSans.variable}>
-        
-        <div className="bg-[url('/videos/starbackground_video.gif')] bg-no-repeat bg-cover">
-        <ClientWrapper>{children}</ClientWrapper>
+      <div className="bg-[url('/videos/starbackground_video.gif')] bg-no-repeat bg-cover">
+      <ClientWrapper>{children}</ClientWrapper>
         </div>
-        
       </body>
     </html>
   );
