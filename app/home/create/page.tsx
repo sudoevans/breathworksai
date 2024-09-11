@@ -11,6 +11,11 @@ import messages from '../../../sample-voice.json';
 import { loadFromLocalStorage, saveToLocalStorage } from 'utils/localStorage';
 import { replacePlaceholder } from 'utils/replacebuilder';
 import { useSession } from 'next-auth/react';
+import {Swiper, SwiperSlide} from 'swiper/react';
+import { EffectCoverflow, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
 
 // Define types for our selections
 type Voice = 'Ryan' | 'Jenny' | 'Amelia' | 'Christopher';
@@ -247,6 +252,13 @@ const BreathworkSession: React.FC = () => {
     saveToLocalStorage('audio', {"voice-guide": guideAudioRef.current.src, "name": selectedVoice})
   }
   
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     if (!session){
+  //       router.push('/register')
+  //     }
+  //   }, 3000)
+  // }, [])
 
   return (
     <div className='pt-4 pb-[5rem] px-4'>
@@ -270,65 +282,37 @@ const BreathworkSession: React.FC = () => {
               </div>
               <h2 className="text-xl">1. Select Voice</h2>
             </div>
-            
-            <div className="grid h-[20rem] mt-[6rem] grid-cols-6 items-center justify-items-center grid-rows-2">
-      {/* Radio Buttons */}
-      <input
-        type="radio"
-        name="position"
-        className='w-4 h-4 cursor-pointer'
-        checked={position === 1}
-        onChange={() => setPosition(1)}
-      />
-      <input
-        type="radio"
-        name="position"
-        className='w-4 h-4 cursor-pointer'
-        checked={position === 2}
-        onChange={() => setPosition(2)}
-      />
-      <input
-        type="radio"
-        name="position"
-        className='w-4 h-4 cursor-pointer'
-        checked={position === 3}
-        onChange={() => setPosition(3)}
-      />
 
-      <input
-        type="radio"
-        name="position"
-        className='w-4 h-4 cursor-pointer'
-        checked={position === 4}
-        onChange={() => setPosition(4)}
-      />
 
-      {/* Carousel */}
-      <div id="carousel">
-        {voices.map((voice, index) => (
-          <div
-            key={voice}
-            className={`cursor-pointer transition-opacity duration-300 border-0 rounded-lg item ${
-              selectedVoice === voice ? 'opacity-100' : 'opacity-50'
-            }`}
-            style={{
-              '--position': position,
-              '--offset': index + 1,
-            } as React.CSSProperties}
-            onClick={() => handleVoiceChange(voice, index)}
-          >
-            <img
-              src={`/images/${voice.toLowerCase()}.png`}
-              alt={voice}
-              className="w-full border-0 h-full"
-            />
-          </div>
-        ))}
+    <div className='h-[16rem] -mx-10 flex items-center'>
+      <Swiper
+        effect={'coverflow'}
+        grabCursor={true}
+        centeredSlides={true}
+        slidesPerView={3}
+        initialSlide={1}
+        coverflowEffect={{
+          rotate: 60,
+          stretch: 20,
+          depth: 10,
+          modifier: 1,
+          slideShadows: true,
+        }}
+        pagination={true}
+        modules={[EffectCoverflow, Pagination]}
+        className="mySwiper"
+      >
+         {voices.map((voice, index) => (
+            <SwiperSlide zoom key={index} virtualIndex={index} onClick={() => handleVoiceChange(voice, index)}>
+          <img src={`/images/${voice.toLowerCase()}.png`} className='h-[14rem] rounded-2xl bg-[#0d1c2a92]' />
+        </SwiperSlide>
+         )
+        )}
         
-      </div>
-      
+       
+      </Swiper>
     </div>
-    <div className='-mt-[2.5rem] mb-4 bg-purple-600 capitalize cursor-pointer flex justify-center items-center min-w-[10rem] mx-auto py-2 rounded-full text-black w-fit font-semibold tracking-wider px-7 text-2xl' onClick={handleVoiceSelection}>{selectedVoice}</div>
+    <div className='mt-8 mb-4 bg-purple-600 capitalize cursor-pointer flex justify-center items-center min-w-[10rem] mx-auto py-2 rounded-full text-black w-fit font-semibold tracking-wider px-7 text-2xl' onClick={handleVoiceSelection}>{selectedVoice}</div>
             <p className="text-center mt-2 font-light tracking-wide text-lg">{selectedVoice} is our most popular guide</p>
           </div>
 
@@ -340,9 +324,26 @@ const BreathworkSession: React.FC = () => {
               <h2 className="text-xl mb-2">2. Select Music</h2>
             </div>
             
-            <div className="flex justify-between">
-              {['Space', 'Hip hop', 'Techno'].map((music) => (
-                <button
+            <div className='h-16'>
+                  <Swiper
+        effect={'coverflow'}
+        grabCursor={true}
+        centeredSlides={true}
+        slidesPerView={3}
+        initialSlide={1}
+        coverflowEffect={{
+          rotate: 60,
+          stretch: 20,
+          depth: 10,
+          modifier: 1,
+          slideShadows: true,
+        }}
+        modules={[EffectCoverflow]}
+        className="mySwiper"
+      >
+         {['Space', 'Hip hop', 'Techno'].map((music, index) => (
+            <SwiperSlide zoom key={index} virtualIndex={index} onClick={() => handleMusicChange(music as Music)}>
+         <button
                   key={music}
                   className={`min-w-[6rem] py-2 rounded-lg transition-opacity duration-300 ${
                     selectedMusic.label === music ? 'bg-purple-600 opacity-100' : 'bg-purple-800 opacity-50'
@@ -351,8 +352,13 @@ const BreathworkSession: React.FC = () => {
                 >
                   {music}
                 </button>
-              ))}
-            </div>
+        </SwiperSlide>
+         )
+        )}
+        
+       
+      </Swiper>
+      </div>
             <p className="text-center mt-2 font-light tracking-wide text-lg">Gives you energy boost and the strength to fight.</p>
           </div>
 
@@ -363,18 +369,41 @@ const BreathworkSession: React.FC = () => {
               </div>
             <h2 className="text-xl mb-2">3. Select Purpose</h2>
             </div>
-            <div className="flex justify-between">
-              {['Focus', 'Be happy', 'Sleep Better'].map((purpose) => (
-                <button
+
+<div className='h-16'>
+                  <Swiper
+        effect={'coverflow'}
+        grabCursor={true}
+        centeredSlides={true}
+        slidesPerView={3}
+        initialSlide={1}
+        coverflowEffect={{
+          rotate: 60,
+          stretch: 20,
+          depth: 10,
+          modifier: 1,
+          slideShadows: true,
+        }}
+        modules={[EffectCoverflow]}
+        className="mySwiper"
+      >
+         {['Focus', 'Be happy', 'Sleep Better'].map((purpose, index) => (
+            <SwiperSlide zoom key={index} virtualIndex={index} onClick={() => handlePurposeChange(purpose as Purpose)}>
+         <button
                   key={purpose}
                   className={`min-w-[6rem] py-2 rounded-lg transition-opacity duration-300 ${
                     selectedPurpose === purpose ? 'bg-purple-600 opacity-100' : 'bg-purple-800 opacity-50'
                   }`}
-                  onClick={() => handlePurposeChange(purpose as Purpose)}
+                  
                 >
                   {purpose}
                 </button>
-              ))}
+        </SwiperSlide>
+         )
+        )}
+        
+       
+      </Swiper>
             </div>
             <p className="text-center mt-2 font-light tracking-wide text-lg">Gives you energy boost and the strength to fight.</p>
           </div>
