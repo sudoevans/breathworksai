@@ -5,7 +5,7 @@ import { saveToLocalStorage } from 'utils/localStorage';
 
 export default function TryForFree() {
   const [name, setName] = useState<string | null>()
-  const [language, setLanguage] = useState<string>('English')
+  const [language, setLanguage] = useState<string>('en')
   const router = useRouter()
 
   const handleFreeTrySubmit = (evt: FormEvent<HTMLFormElement>) => {

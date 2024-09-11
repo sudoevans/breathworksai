@@ -72,7 +72,7 @@ const BreathworkSession: React.FC = () => {
       const parsedMessages = JSON.parse(JSON.stringify(messages));
 
       // replace placeholder text with individual's name or just skip if their preference is not to
-    const newString = replacePlaceholder(parsedMessages[voice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'english'], loadFromLocalStorage('selections')?.name);
+    const newString = replacePlaceholder(parsedMessages[voice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'en'], loadFromLocalStorage('selections')?.name);
     // fetch  each voice
       const response = await fetch("/api/create", {
         method: "POST",
@@ -133,6 +133,7 @@ const BreathworkSession: React.FC = () => {
     
     const musicUrl = tracks.find(item => item.label === music.toLowerCase()).url
     setSelectedMusic({label: music, url: musicUrl});
+    audioRef.current.pause()
     if (musicRef.current.src === musicUrl && !musicRef.current.paused){
       musicRef.current.pause()
       return
@@ -181,7 +182,9 @@ const BreathworkSession: React.FC = () => {
     setSelectedVoice(voice);
     setPosition(index + 1);
     const parsedMessages = JSON.parse(JSON.stringify(messages));
-    const newString = replacePlaceholder(parsedMessages[voice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'english'], loadFromLocalStorage('selections')?.name);
+    console.log(parsedMessages[voice])
+    console.log(loadFromLocalStorage('selections')?.language?.toLowerCase())
+    const newString = replacePlaceholder(parsedMessages[voice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'en'], loadFromLocalStorage('selections')?.name);
 
     // If audio for selected voice isn't preloaded yet, fetch it immediately
     if (!guideAudios[voice]) {

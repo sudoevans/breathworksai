@@ -4,12 +4,6 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react'
 import { loadFromLocalStorage } from 'utils/localStorage';
 
-const tracks = [
-    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
-    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3'
-  ];
 
   type Voice = 'Ryan' | 'Jenny' | 'Amelia' | 'Christopher';
 const PlayerPage = () => {
@@ -22,7 +16,6 @@ const PlayerPage = () => {
     const [selectedVoice, setSelectedVoice] = useState<Voice  | undefined>();
     const [collections, setCollections] =  useState([])
     const [playCollection, setPlayCollection] = useState<any>({})
-    const [musicTracks, setMusicTracks] = useState(Array.from({ length: 3 }).fill(null))
 
     const [username, setUsername] = useState('')
     const guideAudioRef = useRef<any | null>(null);
@@ -119,12 +112,6 @@ const PlayerPage = () => {
         // Load the selected voice guide
         const info = loadFromLocalStorage('audio');
         setSelectedVoice(info.name);
-
-        // const trackSource = loadFromLocalStorage(`collection`)['music'];
-        // if (audioRefs.current){
-        //   audioRefs.current.music.current.src = trackSource.url
-        // }
-
         fetchMusicCollections()
     
       }, []);
