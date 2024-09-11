@@ -10,6 +10,7 @@ import MusicIcon from '../../assets/MusicIcon';
 import messages from '../../../sample-voice.json';
 import { loadFromLocalStorage, saveToLocalStorage } from 'utils/localStorage';
 import { replacePlaceholder } from 'utils/replacebuilder';
+import { useSession } from 'next-auth/react';
 
 // Define types for our selections
 type Voice = 'Ryan' | 'Jenny' | 'Amelia' | 'Christopher';
@@ -25,7 +26,7 @@ const BreathworkSession: React.FC = () => {
   const [selectedPurpose, setSelectedPurpose] = useState<Purpose>('Be happy');
   const [progress, setProgress] = useState<number>(0);
   const [position, setPosition] = useState(2);
-
+  const {data: session} = useSession()
   const [guideAudios, setGuideAudios] = useState<Record<string, string>>({});
 
   const audioRef = useRef<any | null>(null);
@@ -94,14 +95,6 @@ const BreathworkSession: React.FC = () => {
 
   }, [selectedVoice]);
 
-  //   // Play sample audio when voice changes
-  // useEffect(() => {
-  //   if (guideAudioRef.current && guideAudios[selectedVoice]) {
-  //     guideAudioRef.current.src = guideAudios[selectedVoice]; // Use preloaded audio
-  //     guideAudioRef.current.play();
-  //   }
-  // }, [selectedVoice, guideAudios]);
-
 
   const handleMusicChange = (music: Music) => {
     setSelectedMusic(music);
@@ -113,7 +106,8 @@ const BreathworkSession: React.FC = () => {
 
   const handleCreate = () => {
     // Simulate progress
-    let currentProgress = 0;
+    if(session){
+      let currentProgress = 0;
     const interval = setInterval(() => {
       currentProgress += 10;
       setProgress(currentProgress);
@@ -122,6 +116,9 @@ const BreathworkSession: React.FC = () => {
         router.push("/home/player")
       }
     }, 500);
+    }else{
+      router.push('/register')
+    }
   };
 
 
