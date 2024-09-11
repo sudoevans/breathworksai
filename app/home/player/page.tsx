@@ -271,10 +271,10 @@ const PlayerPage = () => {
         min="0"
         max="1"
         step="0.01"
-        onMouseDown={disableScroll} // Disable scroll on mouse down
-        onMouseUp={enableScroll}    // Enable scroll back on mouse up
-        onTouchStart={disableScroll} // Disable scroll on touch start (mobile)
-        onTouchEnd={enableScroll}    // Enable scroll back on touch end (mobile)
+        onMouseDown={disableScroll}
+        onMouseUp={enableScroll}
+        onTouchStart={disableScroll}
+        onTouchEnd={enableScroll}
         value={masterVolume}
         onChange={handleMasterVolumeChange}
         className="w-full self-center mt-4 cursor-pointer range-input mb-4"
@@ -314,10 +314,10 @@ const PlayerPage = () => {
         min="0"
         max="1"
         step="0.01"
-        onMouseDown={disableScroll} // Disable scroll on mouse down
-        onMouseUp={enableScroll}    // Enable scroll back on mouse up
-        onTouchStart={disableScroll} // Disable scroll on touch start (mobile)
-        onTouchEnd={enableScroll}    // Enable scroll back on touch end (mobile)
+        onMouseDown={disableScroll}
+        onMouseUp={enableScroll}
+        onTouchStart={disableScroll}
+        onTouchEnd={enableScroll}
         value={volumes[0]}
         onChange={(e) => handleVolumeChange('voiceData', e)}
         className="range-sub-input transform -rotate-90 w-24 h-6"
@@ -334,10 +334,10 @@ const PlayerPage = () => {
         min="0"
         max="1"
         step="0.01"
-        onMouseDown={disableScroll} // Disable scroll on mouse down
-        onMouseUp={enableScroll}    // Enable scroll back on mouse up
-        onTouchStart={disableScroll} // Disable scroll on touch start (mobile)
-        onTouchEnd={enableScroll}    // Enable scroll back on touch end (mobile)
+        onMouseDown={disableScroll}
+        onMouseUp={enableScroll}
+        onTouchStart={disableScroll}
+        onTouchEnd={enableScroll}
         value={volumes[1]}
         onChange={(e) => handleVolumeChange('music', e)}
         className="range-sub-input transform -rotate-90 w-24 h-6"
@@ -355,10 +355,10 @@ const PlayerPage = () => {
         max="1"
         step="0.01"
         value={volumes[2]}
-        onMouseDown={disableScroll} // Disable scroll on mouse down
-        onMouseUp={enableScroll}    // Enable scroll back on mouse up
-        onTouchStart={disableScroll} // Disable scroll on touch start (mobile)
-        onTouchEnd={enableScroll}    // Enable scroll back on touch end (mobile)
+        onMouseDown={disableScroll}
+        onMouseUp={enableScroll}
+        onTouchStart={disableScroll}
+        onTouchEnd={enableScroll}
         onChange={(e) => handleVolumeChange('purpose', e)}
         className="range-sub-input transform -rotate-90 w-24 h-6"
         style={{ transformOrigin: 'center center' }}
@@ -374,10 +374,10 @@ const PlayerPage = () => {
         min="0"
         max="1"
         step="0.01"
-        onMouseDown={disableScroll} // Disable scroll on mouse down
-        onMouseUp={enableScroll}    // Enable scroll back on mouse up
-        onTouchStart={disableScroll} // Disable scroll on touch start (mobile)
-        onTouchEnd={enableScroll}    // Enable scroll back on touch end (mobile)
+        onMouseDown={disableScroll}
+        onMouseUp={enableScroll}
+        onTouchStart={disableScroll}
+        onTouchEnd={enableScroll}
         value={volumes[0]}
         onChange={(e) => handleVolumeChange('voiceData', e)}
         className="range-sub-input transform -rotate-90 w-24 h-6"
