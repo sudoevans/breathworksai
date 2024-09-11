@@ -1,11 +1,11 @@
 import React from 'react'
 
-const TemplateMusic = ({handleClick}: {handleClick: any}) => {
+const TemplateMusic = ({handleClick, selectPlay}: {handleClick: any, selectPlay}) => {
   return (
     <div className='py-3.5 border-b-2 border-[#AE9BCE]'>
         <div className='w-full flex items-center justify-between'>
             <div className='title flex gap-x-3'>
-                <div className='title-icon cursor-pointer w-7  h-7 flex items-center justify-center bg-[#AE9BCE] rounded-lg'>
+                <div className='title-icon cursor-pointer w-7  h-7 flex items-center justify-center bg-[#AE9BCE] rounded-lg' onClick={selectPlay}>
                 <svg className="svg-icon" style={{ width: "1rem", height: "1rem", verticalAlign: "middle", fill: "#ffffff", overflow: "hidden" }} viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <path
     d="M667.733333 492.8l-281.6-281.6c-10.666667-10.666667-21.333333-14.933333-27.733333-10.666667s-12.8 12.8-12.8 27.733334v569.6c0 14.933333 4.266667 25.6 12.8 27.733333s17.066667 0 27.733333-10.666667l281.6-281.6c4.266667-4.266667 8.533333-12.8 8.533333-19.2 0-10.666667-2.133333-17.066667-8.533333-21.333333z"

@@ -21,6 +21,7 @@ const PlayerPage = () => {
     const [originalVolumes, setOriginalVolumes] = useState<number[]>(volumes);
     const [selectedVoice, setSelectedVoice] = useState<Voice  | undefined>();
     const [collections, setCollections] =  useState([])
+    const [playCollection, setPlayCollection] = useState<any>({})
     const [musicTracks, setMusicTracks] = useState(Array.from({ length: 3 }).fill(null))
 
     const [username, setUsername] = useState('')
@@ -33,23 +34,41 @@ const PlayerPage = () => {
       purpose: React.createRef(),
     });
 
+    const handleSelectToPlay = (index) => {
+      setPlayCollection(collections[index]) 
+    }
+
       useEffect(() => {
         if (collections.length > 0) {
-          // Initialize refs based on the first item in collections
-          const firstCollection = collections[0];
-          if(audioRefs.current.music.current){
-            audioRefs.current.music.current.src = firstCollection.music;
-          }
-          if(audioRefs.current.purpose.current){
-            audioRefs.current.purpose.current.src = firstCollection.purpose;
-          }
-         if(audioRefs.current.voiceData.current){
-          audioRefs.current.voiceData.current.src = firstCollection.voiceData;
-         }
-          
+
+          setPlayCollection(collections[0])
           
         }
-      }, [collections,  audioRefs]);
+      }, [collections]);
+
+      useEffect(() => {
+        if (collections.length > 0){
+          if(audioRefs.current.music.current){
+            audioRefs.current.music.current.src = playCollection.music;
+          }
+          if(audioRefs.current.purpose.current){
+            audioRefs.current.purpose.current.src = playCollection.purpose;
+          }
+         if(audioRefs.current.voiceData.current){
+          audioRefs.current.voiceData.current.src = playCollection.voiceData;
+         }
+        }else{
+          if(audioRefs.current.music.current){
+            audioRefs.current.music.current.src = undefined
+          }
+          if(audioRefs.current.purpose.current){
+            audioRefs.current.purpose.current.src = undefined;
+          }
+         if(audioRefs.current.voiceData.current){
+          audioRefs.current.voiceData.current.src = undefined
+         }
+        }
+      }, [playCollection])
 
       const fetchMusicCollections = async () => {
         const response = await fetch('/api/collection', {
@@ -111,10 +130,8 @@ const PlayerPage = () => {
       }, []);
 
       const handlePlayPause = () => {
-        setIsPlaying(prev => !prev);
+        collections.length && setIsPlaying(prev => !prev);
         const { music, purpose } = audioRefs.current;
-
-        console.log(music)
     
         if (music.current) {
           if (isPlaying) {
@@ -388,7 +405,7 @@ const PlayerPage = () => {
         {
           collections.map((item, index) => (
             <div key={index}>
-              <TemplateMusic handleClick={() => removeMusicCollections(item.id)}/>
+              <TemplateMusic selectPlay={() => handleSelectToPlay(index)} handleClick={() => removeMusicCollections(item.id)}/>
             </div>
           ))
         }
