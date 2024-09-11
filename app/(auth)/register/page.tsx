@@ -16,24 +16,29 @@ export default function Signup() {
   const [email, setEmail] = useState('')
   const [sayName, setSayName] = useState('')
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
 
 
   async function register(evt: FormEvent<HTMLElement>) {
     evt.preventDefault()
     try{
+      setLoading(true)
       const response = await axios.post('/api/register', {name, email, password, language})
       if(response){
+        
         signIn('credentials', {
           email,
           password,
           redirect: false
         }).then((callback) => {
         if(callback.ok){
+          setLoading(false)
           router.push('/home/create')
         }
       })
     }
     }catch (error){
+      setLoading(false)
       console.log(error)
     }
 
@@ -122,7 +127,9 @@ export default function Signup() {
             Note: name pronunciation is still in beta. You can go back and uncheck this box
           </p>
           <SubmitButton className="w-full py-2 px-4 bg-white text-black font-semibold rounded-full hover:bg-purple-100 transition duration-300">
-            Let&apos;s Go
+          {
+              loading ? "Loading..." : "Lets Go"
+            }
           </SubmitButton>
       </form>
       

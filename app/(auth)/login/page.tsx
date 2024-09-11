@@ -11,19 +11,22 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const router = useRouter()
   const [error, setError] = useState('')
-  const {status} = useSession()
+  const [loading, setLoading] = useState(false)
   
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
+      setLoading(true)
       signIn('credentials', {
         email,
         password,
         redirect: false
       }).then(val => {
+        setLoading(false)
         router.push('/home/create')
       }).catch(err => {
+        setLoading(false)
         setError('Invalid email or password')
       })
     } catch (err: any) {}
@@ -67,7 +70,7 @@ export default function Login() {
           </div>
           <SubmitButton className="w-full bg-white text-purple-900 py-3 rounded-full font-semibold hover:bg-purple-100 transition duration-300">
             {
-              status === 'loading' ? "Loading..." : "Lets Go"
+              loading ? "Loading..." : "Lets Go"
             }
           </SubmitButton>
         </form>
