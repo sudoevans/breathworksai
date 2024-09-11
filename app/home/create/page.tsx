@@ -17,6 +17,22 @@ type Voice = 'Ryan' | 'Jenny' | 'Amelia' | 'Christopher';
 type Music = 'Space' | 'Hip hop' | 'Techno';
 type Purpose = 'Space' | 'Be happy' | 'Focus';
 
+const tracks = [
+  {
+    label: 'hip hop',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'
+  },
+  {
+    label: 'focus',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'
+  },
+  {
+    label: 'techno',
+    url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'
+  },
+  // 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3'
+];
+
 
 const BreathworkSession: React.FC = () => {
   const router = useRouter();
@@ -30,6 +46,7 @@ const BreathworkSession: React.FC = () => {
   const [guideAudios, setGuideAudios] = useState<Record<string, string>>({});
 
   const audioRef = useRef<any | null>(null);
+  const musicRef = useRef<any | null>(null);
   const guideAudioRef = useRef<any | null>(null);
 
 
@@ -92,12 +109,18 @@ const BreathworkSession: React.FC = () => {
       // audioRef.current.play();
     }
 
-
-  }, [selectedVoice]);
+  }, []);
 
 
   const handleMusicChange = (music: Music) => {
     setSelectedMusic(music);
+    musicRef.current.src = tracks.find(item => item.label === music.toLowerCase()).url
+    if(!!musicRef.current?.paused){
+      musicRef.current.play()
+    }else{
+      musicRef.current.pause()
+    }
+    // console.log(tracks.find(item => item.label === music.toLowerCase()))
   };
 
   const handlePurposeChange = (purpose: Purpose) => {
@@ -286,7 +309,7 @@ const BreathworkSession: React.FC = () => {
               {['Space', 'Hip hop', 'Techno'].map((music) => (
                 <button
                   key={music}
-                  className={`px-4 py-2 rounded-lg transition-opacity duration-300 ${
+                  className={`min-w-[6rem] py-2 rounded-lg transition-opacity duration-300 ${
                     selectedMusic === music ? 'bg-purple-600 opacity-100' : 'bg-purple-800 opacity-50'
                   }`}
                   onClick={() => handleMusicChange(music as Music)}
@@ -306,10 +329,10 @@ const BreathworkSession: React.FC = () => {
             <h2 className="text-xl mb-2">3. Select Purpose</h2>
             </div>
             <div className="flex justify-between">
-              {['Focus', 'Be happy', 'Focus'].map((purpose) => (
+              {['Focus', 'Be happy', 'Sleep Better'].map((purpose) => (
                 <button
                   key={purpose}
-                  className={`px-4 py-2 rounded-lg transition-opacity duration-300 ${
+                  className={`min-w-[6rem] py-2 rounded-lg transition-opacity duration-300 ${
                     selectedPurpose === purpose ? 'bg-purple-600 opacity-100' : 'bg-purple-800 opacity-50'
                   }`}
                   onClick={() => handlePurposeChange(purpose as Purpose)}
