@@ -348,7 +348,6 @@ const BreathworkSession: React.FC = () => {
                   className={`min-w-[6rem] py-2 rounded-lg transition-opacity duration-300 ${
                     selectedMusic.label === music ? 'bg-purple-600 opacity-100' : 'bg-purple-800 opacity-50'
                   }`}
-                  onClick={() => handleMusicChange(music as Music)}
                 >
                   {music}
                 </button>
