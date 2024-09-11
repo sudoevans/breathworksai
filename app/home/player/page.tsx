@@ -1,5 +1,6 @@
 'use client'
 import TemplateMusic from '@/app/components/TemplateMusic';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react'
 import { loadFromLocalStorage } from 'utils/localStorage';
 
@@ -12,21 +13,85 @@ const tracks = [
 
   type Voice = 'Ryan' | 'Jenny' | 'Amelia' | 'Christopher';
 const PlayerPage = () => {
+  const router = useRouter()
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [masterVolume, setMasterVolume] = useState<number>(1);
     const [volumes, setVolumes] = useState<number[]>([1, 1, 1, 1]);
     const [isMuted, setIsMuted] = useState<boolean>(false);
     const [originalVolumes, setOriginalVolumes] = useState<number[]>(volumes);
     const [selectedVoice, setSelectedVoice] = useState<Voice  | undefined>();
+    const [collections, setCollections] =  useState([])
     const [musicTracks, setMusicTracks] = useState(Array.from({ length: 3 }).fill(null))
 
     const [username, setUsername] = useState('')
     const guideAudioRef = useRef<any | null>(null);
     
   
-    const audioRefs = useRef<Array<React.RefObject<any>>>(
-        tracks.map(() => React.createRef<any>())
-      );
+    const audioRefs = useRef<{ voiceData: React.RefObject<any>, music: React.RefObject<any>, purpose: React.RefObject<any> }>({
+      voiceData: React.createRef(),
+      music: React.createRef(),
+      purpose: React.createRef(),
+    });
+
+      useEffect(() => {
+        if (collections.length > 0) {
+          // Initialize refs based on the first item in collections
+          const firstCollection = collections[0];
+          if(audioRefs.current.music.current){
+            audioRefs.current.music.current.src = firstCollection.music;
+          }
+          if(audioRefs.current.purpose.current){
+            audioRefs.current.purpose.current.src = firstCollection.purpose;
+          }
+         if(audioRefs.current.voiceData.current){
+          audioRefs.current.voiceData.current.src = firstCollection.voiceData;
+         }
+          
+          
+        }
+      }, [collections,  audioRefs]);
+
+      const fetchMusicCollections = async () => {
+        const response = await fetch('/api/collection', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      
+        const data = await response.json();
+        if (response.ok) {
+          setCollections(data)
+        } else {
+          console.error('Error fetching music collections:', data);
+        }
+      };
+
+      const removeMusicCollections = async (id:string) => {
+    
+        try {
+          const response = await fetch('/api/collection', {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id }),
+          });
+    
+          if (!response.ok) {
+            throw new Error('Failed to remove collection');
+          }
+    
+          setCollections((prev) => prev.filter((collection) => collection.id !== id));
+
+          if(collections.length === 0){
+            router.back()
+          }
+        } catch (err: any) {
+          console.log(err)
+        }
+      };
+      
     
       useEffect(() => {
         // Load username from local storage
@@ -36,50 +101,62 @@ const PlayerPage = () => {
         const info = loadFromLocalStorage('audio');
         setSelectedVoice(info.name);
 
-        const trackSource = loadFromLocalStorage(`collection`)['music'];
-        if (audioRefs.current){
-          audioRefs.current[0].current.src = trackSource.url
-        }
+        // const trackSource = loadFromLocalStorage(`collection`)['music'];
+        // if (audioRefs.current){
+        //   audioRefs.current.music.current.src = trackSource.url
+        // }
+
+        fetchMusicCollections()
     
       }, []);
-
       const handlePlayPause = () => {
         setIsPlaying(prev => !prev);
-        audioRefs.current.forEach(ref => {
-          if (ref.current) {
-            if (isPlaying) {
-              ref.current.pause();
-            } else {
-              ref.current.play();
-            }
+        const { music, purpose } = audioRefs.current;
+    
+        if (music.current) {
+          if (isPlaying) {
+            music.current.pause();
+          } else {
+            music.current.play();
           }
-        });
+        }
+    
+        if (purpose.current) {
+          if (isPlaying) {
+            purpose.current.pause();
+          } else {
+            purpose.current.play();
+          }
+        }
       };
     
       const handleRewind = () => {
-        audioRefs.current.forEach(ref => {
-          if (ref.current) {
-            ref.current.currentTime = Math.max(ref.current.currentTime - 10, 0);
-          }
-        });
+        const musicRef = audioRefs.current.music.current;
+        const purposeRef = audioRefs.current.purpose.current
+        if (musicRef && purposeRef) {
+          musicRef.currentTime = Math.min(musicRef.currentTime - 10, musicRef.duration);
+          purposeRef.currentTime = Math.min(musicRef.currentTime - 10, purposeRef.duration);
+        }
       };
     
       const handleForward = () => {
-        audioRefs.current.forEach(ref => {
-          if (ref.current) {
-            ref.current.currentTime = Math.min(ref.current.currentTime + 10, ref.current.currentTime);
-          }
-        });
+        const musicRef = audioRefs.current.music.current;
+        const purposeRef = audioRefs.current.purpose.current
+        if (musicRef && purposeRef) {
+          musicRef.currentTime = Math.min(musicRef.currentTime + 10, musicRef.duration);
+          purposeRef.currentTime = Math.min(musicRef.currentTime + 10, purposeRef.duration);
+        }
       };
     
       const handleMasterVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const volume = parseFloat(e.target.value);
-        setMasterVolume(volume);
-        audioRefs.current.forEach((ref, index) => {
-          if (ref.current) {
-            ref.current.volume = isMuted ? 0 : volume * volumes[index];
-          }
-        });
+    setMasterVolume(volume);
+    const musicRef = audioRefs.current.music.current;
+    const purposeRef = audioRefs.current.purpose.current
+    if (musicRef &&  purposeRef) {
+      musicRef.volume = isMuted ? 0 : volume;
+      purposeRef.volume = isMuted ? 0 : volume;
+    }
       };
     
       const handleVolumeChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,24 +166,42 @@ const PlayerPage = () => {
           audioRefs.current[index].current.volume = isMuted ? 0 : masterVolume * volume;
         }
       };
+
       const toggleMute = () => {
-        setIsMuted(prev => !prev);
-        if (isMuted) {
-          // Restore original volumes when unmuting
-          audioRefs.current.forEach((ref, index) => {
-            if (ref.current) {
-              ref.current.volume = masterVolume * originalVolumes[index];
+        setIsMuted(prev => {
+          const newIsMuted = !prev;
+          const { music, purpose } = audioRefs.current;
+          
+          if (music.current) {
+            if (newIsMuted) {
+              // Store original volume and mute
+              setOriginalVolumes(prevVolumes => ({
+                ...prevVolumes,
+                music: music.current.volume,
+                purpose: purpose.current ? purpose.current.volume : 1
+              }));
+              music.current.volume = 0;
+            } else {
+              // Restore original volumes
+              music.current.volume = masterVolume * originalVolumes[0];
+              if (purpose.current) {
+                purpose.current.volume = masterVolume * originalVolumes[1];
+              }
             }
-          });
-        } else {
-          // Store original volumes and mute
-          setOriginalVolumes(volumes);
-          audioRefs.current.forEach(ref => {
-            if (ref.current) {
-              ref.current.volume = 0;
+          }
+    
+          if (purpose.current) {
+            if (newIsMuted) {
+              // Mute purpose audio
+              purpose.current.volume = 0;
+            } else {
+              // Restore original volume
+              purpose.current.volume = masterVolume * originalVolumes[1];
             }
-          });
-        }
+          }
+    
+          return newIsMuted;
+        });
       };
 
       const playGuidance = () => {
@@ -186,7 +281,72 @@ const PlayerPage = () => {
     </button>
       </div>
       <div className="flex h-[3rem] gap-4 justify-between items-end mb-0 mt-auto w-full">
-  {tracks.map((track, index) => (
+      <div className="flex flex-col items-center flex-grow">
+        <div className='rounded-full mb-12 border-2 border-[#AE9BCE]'>
+        <svg height="36" viewBox="0 0 48 48" width="36" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h48v48H0z" fill="none"/><path d="M30 12H6v4h24v-4zm0 8H6v4h24v-4zM6 32h16v-4H6v4zm28-20v16.37c-.63-.23-1.29-.37-2-.37-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6V16h6v-4H34z" fill='#AE9BCE'/></svg>
+        </div>
+      <audio ref={audioRefs.current.voiceData} />
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value={volumes[0]}
+        onChange={(e) => {}}
+        className="range-sub-input transform -rotate-90 w-24 h-6"
+        style={{ transformOrigin: 'center center' }}
+      />
+    </div>
+    <div className="flex flex-col items-center flex-grow">
+        <div className='rounded-full mb-12 border-2 border-[#AE9BCE]'>
+        <svg height="36" viewBox="0 0 48 48" width="36" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h48v48H0z" fill="none"/><path d="M30 12H6v4h24v-4zm0 8H6v4h24v-4zM6 32h16v-4H6v4zm28-20v16.37c-.63-.23-1.29-.37-2-.37-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6V16h6v-4H34z" fill='#AE9BCE'/></svg>
+        </div>
+      <audio ref={audioRefs.current.music} />
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value={volumes[1]}
+        onChange={(e) => {}}
+        className="range-sub-input transform -rotate-90 w-24 h-6"
+        style={{ transformOrigin: 'center center' }}
+      />
+    </div>
+    <div className="flex flex-col items-center flex-grow">
+        <div className='rounded-full mb-12 border-2 border-[#AE9BCE]'>
+        <svg height="36" viewBox="0 0 48 48" width="36" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h48v48H0z" fill="none"/><path d="M30 12H6v4h24v-4zm0 8H6v4h24v-4zM6 32h16v-4H6v4zm28-20v16.37c-.63-.23-1.29-.37-2-.37-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6V16h6v-4H34z" fill='#AE9BCE'/></svg>
+        </div>
+      <audio ref={audioRefs.current.purpose} />
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value={volumes[3]}
+        onChange={(e) => {}}
+        className="range-sub-input transform -rotate-90 w-24 h-6"
+        style={{ transformOrigin: 'center center' }}
+      />
+    </div>
+    <div className="flex flex-col items-center flex-grow">
+        <div className='rounded-full mb-12 border-2 border-[#AE9BCE]'>
+        <svg height="36" viewBox="0 0 48 48" width="36" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h48v48H0z" fill="none"/><path d="M30 12H6v4h24v-4zm0 8H6v4h24v-4zM6 32h16v-4H6v4zm28-20v16.37c-.63-.23-1.29-.37-2-.37-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6V16h6v-4H34z" fill='#AE9BCE'/></svg>
+        </div>
+      <audio ref={audioRefs.current.voiceData} />
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value={volumes[1]}
+        onChange={(e) => {}}
+        className="range-sub-input transform -rotate-90 w-24 h-6"
+        style={{ transformOrigin: 'center center' }}
+      />
+    </div>
+
+  {/* {tracks.map((track, index) => (
     <div key={index} className="flex flex-col items-center flex-grow">
         <div className='rounded-full mb-12 border-2 border-[#AE9BCE]'>
         <svg height="36" viewBox="0 0 48 48" width="36" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h48v48H0z" fill="none"/><path d="M30 12H6v4h24v-4zm0 8H6v4h24v-4zM6 32h16v-4H6v4zm28-20v16.37c-.63-.23-1.29-.37-2-.37-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6V16h6v-4H34z" fill='#AE9BCE'/></svg>
@@ -203,7 +363,7 @@ const PlayerPage = () => {
         style={{ transformOrigin: 'center center' }}
       />
     </div>
-  ))}
+  ))} */}
 </div>
 <div className='mt-4 py-6 text-left w-full'>
         <div className='py-4 -mx-6 px-6 border-b-2 border-[#AE9BCE] flex gap-x-3 items-center'>
@@ -217,9 +377,9 @@ const PlayerPage = () => {
             <p className='uppercase'>Breathing Guidance</p>
         </div>
         {
-          musicTracks.map((item, index) => (
+          collections.map((item, index) => (
             <div key={index}>
-              <TemplateMusic handleClick={() => setMusicTracks(musicTracks.filter((_, idx) => idx !== index))}/>
+              <TemplateMusic handleClick={() => removeMusicCollections(item.id)}/>
             </div>
           ))
         }

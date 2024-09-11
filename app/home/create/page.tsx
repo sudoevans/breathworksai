@@ -101,13 +101,13 @@ const BreathworkSession: React.FC = () => {
     }
   };
 
-  const addMusicCollection = async (voice, music, purpose) => {
+  const addMusicCollection = async (voice, music, purpose, voiceData) => {
     const response = await fetch('/api/collection', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ voice, music, purpose }),
+      body: JSON.stringify({ voice, music, purpose, voiceData }),
     });
   
     const data = await response.json();
@@ -159,7 +159,7 @@ const BreathworkSession: React.FC = () => {
     if(session){
       let currentProgress = 0;
       saveToLocalStorage('collection', {"music": selectedMusic})
-      addMusicCollection(JSON.stringify({"voice-guide": guideAudioRef.current.src, "name": selectedVoice}), selectedMusic.url, selectedMusic.url)
+      addMusicCollection(selectedVoice, selectedMusic.url, selectedMusic.url, guideAudioRef.current.src)
     const interval = setInterval(() => {
       currentProgress += 10;
       setProgress(currentProgress);

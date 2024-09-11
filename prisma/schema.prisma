@@ -22,6 +22,7 @@ model MusicCollection {
   userId  Int
   user    User   @relation(fields: [userId], references: [id])
   voice   String
+  voiceData String?
   music   String
   purpose String
 
