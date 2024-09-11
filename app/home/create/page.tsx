@@ -101,6 +101,23 @@ const BreathworkSession: React.FC = () => {
     }
   };
 
+  const addMusicCollection = async (voice, music, purpose) => {
+    const response = await fetch('/api/collection', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ voice, music, purpose }),
+    });
+  
+    const data = await response.json();
+    if (response.ok) {
+      console.log('Music collection added:', data);
+    } else {
+      console.error('Error adding music collection:', data);
+    }
+  };
+
 
   useEffect(() => {
     // Play sample audio when voice changes
@@ -136,10 +153,13 @@ const BreathworkSession: React.FC = () => {
   };
 
   const handleCreate = () => {
+
+    console.log(session)
     // Simulate progress
     if(session){
       let currentProgress = 0;
       saveToLocalStorage('collection', {"music": selectedMusic})
+      addMusicCollection(JSON.stringify({"voice-guide": guideAudioRef.current.src, "name": selectedVoice}), selectedMusic.url, selectedMusic.url)
     const interval = setInterval(() => {
       currentProgress += 10;
       setProgress(currentProgress);
@@ -149,7 +169,7 @@ const BreathworkSession: React.FC = () => {
       }
     }, 500);
     }else{
-      router.push('/register')
+      router.push('/login')
     }
   };
 

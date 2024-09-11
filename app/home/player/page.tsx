@@ -40,15 +40,7 @@ const PlayerPage = () => {
         if (audioRefs.current){
           audioRefs.current[0].current.src = trackSource.url
         }
-       
     
-        // Load audio sources for each track and set them to their respective audioRefs
-        // audioRefs.current.forEach((ref, index) => {
-          
-        //   if (ref.current && trackSource) {
-        //     ref.current.src = trackSource;  // Set the source from local storage
-        //   }
-        // });
       }, []);
 
       const handlePlayPause = () => {

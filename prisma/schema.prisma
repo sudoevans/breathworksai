@@ -10,8 +10,21 @@ datasource db {
 model User {
   id       Int      @id @default(autoincrement())
   name     String?  @db.VarChar(64)
-  email    String?  @db.VarChar(64)
+  email    String?  @db.VarChar(64) @unique
   password String?  @db.VarChar(64)
   language String?  @db.VarChar(64)
   say_name Boolean?
+  musicCollections MusicCollection[]
+}
+
+model MusicCollection {
+  id      Int    @id @default(autoincrement())
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id])
+  voice   String
+  music   String
+  purpose String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
