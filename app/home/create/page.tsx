@@ -252,13 +252,13 @@ const BreathworkSession: React.FC = () => {
     saveToLocalStorage('audio', {"voice-guide": guideAudioRef.current.src, "name": selectedVoice})
   }
   
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     if (!session){
-  //       router.push('/register')
-  //     }
-  //   }, 3000)
-  // }, [])
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!session){
+        router.push('/register')
+      }
+    }, 3000)
+  }, [])
 
   return (
     <div className='pt-4 pb-[5rem] px-4'>
@@ -282,64 +282,7 @@ const BreathworkSession: React.FC = () => {
               </div>
               <h2 className="text-xl">1. Select Voice</h2>
             </div>
-            
-            {/* <div className="grid h-[20rem] mt-[6rem] grid-cols-6 items-center justify-items-center grid-rows-2"> */}
-      {/* Radio Buttons */}
-      {/* <input
-        type="radio"
-        name="position"
-        className='w-4 h-4 cursor-pointer'
-        checked={position === 1}
-        onChange={() => setPosition(1)}
-      />
-      <input
-        type="radio"
-        name="position"
-        className='w-4 h-4 cursor-pointer'
-        checked={position === 2}
-        onChange={() => setPosition(2)}
-      />
-      <input
-        type="radio"
-        name="position"
-        className='w-4 h-4 cursor-pointer'
-        checked={position === 3}
-        onChange={() => setPosition(3)}
-      />
 
-      <input
-        type="radio"
-        name="position"
-        className='w-4 h-4 cursor-pointer'
-        checked={position === 4}
-        onChange={() => setPosition(4)}
-      /> */}
-
-      {/* Carousel */}
-      {/* <div id="carousel">
-        {voices.map((voice, index) => (
-          <div
-            key={voice}
-            className={`cursor-pointer transition-opacity duration-300 border-0 rounded-lg item ${
-              selectedVoice === voice ? 'opacity-100' : 'opacity-50'
-            }`}
-            style={{
-              '--position': position,
-              '--offset': index + 1,
-            } as React.CSSProperties}
-            onClick={() => handleVoiceChange(voice, index)}
-          >
-            <img
-              src={`/images/${voice.toLowerCase()}.png`}
-              alt={voice}
-              className="w-full border-0 h-full"
-            />
-          </div>
-        ))}
-        
-      </div> */}
-      
-    {/* </div> */}
 
     <div className='h-[16rem] -mx-10 flex items-center'>
       <Swiper
