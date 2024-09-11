@@ -303,7 +303,7 @@ const BreathworkSession: React.FC = () => {
         className="mySwiper"
       >
          {voices.map((voice, index) => (
-            <SwiperSlide zoom key={index} virtualIndex={index} onClick={() => handleVoiceChange(voice, index)}>
+            <SwiperSlide zoom key={index} virtualIndex={index} className='overflow-hidden' onClick={() => handleVoiceChange(voice, index)}>
           <img src={`/images/${voice.toLowerCase()}.png`} className='h-[14rem] rounded-2xl bg-[#0d1c2a92]' />
         </SwiperSlide>
          )
