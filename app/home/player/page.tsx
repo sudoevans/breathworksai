@@ -241,9 +241,8 @@ const PlayerPage = () => {
       };
       
   return (
-    <div>
     
-    <div className="z-10 w-full absolute overflow-y-auto inset-0 bg-player-bg h-screen md:h-auto md:min-h-[48.625rem] pt-[10rem] flex flex-col justify-center gap-y-6 items-center max-w-md p-6 space-y-8">
+    <div className="z-10 mx-auto w-full absolute overflow-y-auto inset-0 bg-player-bg h-screen md:h-auto md:min-h-[48.625rem] pt-[10rem] flex flex-col justify-center gap-y-6 items-center max-w-md p-6 space-y-8">
     <p>{selectedVoice && `Speech of ${username !== "" ? (username  + " and "): ""} ${selectedVoice}`}</p>
       <div className="flex items-center gap-x-10 mb-4">
         <button onClick={handleRewind}>
@@ -410,7 +409,7 @@ const PlayerPage = () => {
       <audio ref={guideAudioRef} />
       </div>
       
-    </div>
+
   )
 }
 
