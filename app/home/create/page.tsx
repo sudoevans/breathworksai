@@ -185,7 +185,13 @@ const BreathworkSession: React.FC = () => {
 
   const voices = ['Christopher','Ryan', 'Jenny', 'Amelia'];
 
-  const handleVoiceChange = (voice: any, index: any) => {
+  const handleVoiceChange = (voiceSelected?: any, index?: any) => {
+    let voice
+    if (!voiceSelected){
+      voice = voices[index]
+    } else{
+      voice = voiceSelected
+    }
     guideAudioRef?.current?.pause()
     musicRef.current.pause()
     setSelectedVoice(voice);
@@ -301,6 +307,7 @@ const BreathworkSession: React.FC = () => {
         pagination={true}
         modules={[EffectCoverflow, Pagination]}
         className="mySwiper"
+        onRealIndexChange={(index) => handleVoiceChange(null, index.activeIndex)}
       >
          {voices.map((voice, index) => (
             <SwiperSlide zoom key={index} virtualIndex={index} className='overflow-hidden' onClick={() => handleVoiceChange(voice, index)}>
