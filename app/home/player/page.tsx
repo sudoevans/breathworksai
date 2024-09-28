@@ -61,7 +61,7 @@ const PlayerPage = () => {
           audioRefs.current.voiceData.current.src = undefined
          }
         }
-      }, [playCollection])
+      }, [playCollection, collections])
 
       const fetchMusicCollections = async () => {
         const response = await fetch('/api/collection', {

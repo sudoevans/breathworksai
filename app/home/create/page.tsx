@@ -1,6 +1,5 @@
 'use client'
 import React, { useState, useEffect, useRef } from 'react';
-// import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import HomeIcon from '../../assets/HomeIcon';
 import ProfileIcon from '../../assets/ProfileIcon';
@@ -39,7 +38,7 @@ const tracks = [
 ];
 
 
-const BreathworkSession: React.FC = () => {
+const Page: React.FC = () => {
   const router = useRouter();
   
   const [selectedVoice, setSelectedVoice] = useState<Voice>('Ryan');
@@ -136,13 +135,13 @@ const BreathworkSession: React.FC = () => {
 
   const handleMusicChange = (music: Music) => {
     
-    audioRef.current.pause()
-    guideAudioRef.current.pause()
+    audioRef?.current?.pause()
+    guideAudioRef?.current?.pause()
     
     const musicUrl = tracks.find(item => item.label === music.toLowerCase()).url
     setSelectedMusic({label: music, url: musicUrl});
     if (musicRef.current.src === musicUrl && !musicRef.current.paused){
-      musicRef.current.pause()
+      musicRef.current?.pause()
       return
     }
     if(musicRef.current){
@@ -152,14 +151,14 @@ const BreathworkSession: React.FC = () => {
     if((musicRef.current.src === musicUrl && musicRef.current.paused)){
       musicRef.current.play()
       }else{
-        musicRef.current.pause()
+        musicRef.current?.pause()
       }
   };
 
   const handlePurposeChange = (purpose: Purpose) => {
-    audioRef.current.pause()
-    guideAudioRef.current.pause()
-    musicRef.current.pause()
+    audioRef.current?.pause()
+    guideAudioRef.current?.pause()
+    musicRef.current?.pause()
     setSelectedPurpose(purpose);
   };
 
@@ -193,7 +192,7 @@ const BreathworkSession: React.FC = () => {
       voice = voiceSelected
     }
     guideAudioRef?.current?.pause()
-    musicRef.current.pause()
+    musicRef.current?.pause()
     setSelectedVoice(voice);
     setPosition(index + 1);
     const parsedMessages = JSON.parse(JSON.stringify(messages));
@@ -253,7 +252,7 @@ const BreathworkSession: React.FC = () => {
   const handleVoiceSelection = (voice) => {
     guideAudioRef.current?.pause()
     audioRef.current?.pause()
-    musicRef.current.pause()
+    musicRef.current?.pause()
     // save selected voice to local storage
     saveToLocalStorage('audio', {"voice-guide": guideAudioRef.current.src, "name": selectedVoice})
   }
@@ -264,7 +263,7 @@ const BreathworkSession: React.FC = () => {
         router.push('/register')
       }
     }, 3000)
-  }, [])
+  }, [router, session])
 
   return (
     <div className='pt-4 pb-[5rem] px-4'>
@@ -442,4 +441,4 @@ const BreathworkSession: React.FC = () => {
   );
 };
 
-export default BreathworkSession;
+export default Page;
