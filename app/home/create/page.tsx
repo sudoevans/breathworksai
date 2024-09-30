@@ -12,7 +12,7 @@ import { replacePlaceholder } from 'utils/replacebuilder';
 import { useSession } from 'next-auth/react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import { EffectCoverflow, Pagination } from 'swiper/modules';
-import "swiper/swiper.min.css";
+import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 
@@ -251,7 +251,7 @@ const Page: React.FC = () => {
         }));
       };
     } catch (error:any) {
-      if (error.name === 'AbortError') {
+      if (error?.name === 'AbortError') {
         console.log(`Preload for ${voice} was aborted.`);
       } else {
         console.error(`Failed to preload audio for ${voice}:`, error);
