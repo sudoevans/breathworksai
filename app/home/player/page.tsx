@@ -210,7 +210,8 @@ const Page = () => {
     // Load username from local storage
     setUsername(loadFromLocalStorage('selections')?.name || '');
     setLanguage(loadFromLocalStorage('selections')?.language || '');
-    fetchMusicCollections()
+
+    fetchMusicCollections();
 
   }, []);
 
@@ -218,6 +219,7 @@ const Page = () => {
     if (collections.length > 0) {
 
       setPlayCollection(collections[0])
+      setSelectedVoice(collections[0]?.voice);
       
     }
   }, [collections]);
