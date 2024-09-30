@@ -12,7 +12,7 @@ import { replacePlaceholder } from 'utils/replacebuilder';
 import { useSession } from 'next-auth/react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import { EffectCoverflow, Pagination } from 'swiper/modules';
-import 'swiper/css';
+import "swiper/swiper.min.css";
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 
