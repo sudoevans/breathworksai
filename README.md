@@ -21,4 +21,3 @@ The Personalized Breathworks App is a web-based platform designed to provide tai
 3. **Session Tracking**: User activity, including completed sessions, is stored in the PostgreSQL database. This allows users to track their progress and revisit previous sessions as needed.
 
 4. **Background & UI**: The app features an engaging, calming background and a simple user interface to enhance the experience and promote relaxation.
-5. **Music Player**
