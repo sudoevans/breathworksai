@@ -1,4 +1,4 @@
-# Next.js + PostgreSQL Breathworks App
+# Breathworks App
 
 ## Overview
 
