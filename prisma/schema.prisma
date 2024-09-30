@@ -24,8 +24,9 @@ model MusicCollection {
   voice   String
   voiceData String?
   music   String
+  musicGenre String?
   purpose String
-
+  purposeGenre String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

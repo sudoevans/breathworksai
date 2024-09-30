@@ -1,18 +1,36 @@
 "use client"
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { saveToLocalStorage } from 'utils/localStorage';
 
 export default function TryForFree() {
-  const [name, setName] = useState<string | null>()
+  const [name, setName] = useState<string>('')
   const [language, setLanguage] = useState<string>('en')
+  const [sayName, setSayName] = useState(false)
+  const  [loading, setLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState(false)
   const router = useRouter()
 
   const handleFreeTrySubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault()
-    saveToLocalStorage('selections', {name, language})
-    name?.length && router.push('/home/create')
+    setLoading(true)
+    if (name?.length && language){
+      saveToLocalStorage('selections', {name, language, sayName: sayName})
+      setLoading(false)
+      router.push('/home/create')
+    }else {
+      setErrorMsg(true)
+    }
   }
+
+  useEffect(() => {
+    let timeout
+    if(errorMsg){
+      timeout = setTimeout(() => {
+        setErrorMsg(false)
+      }, 2000)
+    }
+  }, [errorMsg])
   
   return (
     <div className="z-10 mt-8 w-full mx-auto max-w-md px-4 text-center">
@@ -50,6 +68,12 @@ export default function TryForFree() {
               </select>
             </div>
             </div>
+            {/* error message */}
+            {
+              errorMsg && (
+                <p className='w-full text-red-600 text-left'>Please Fill all fields</p>
+              )
+            }
 
         {/*  Checkbox*/}
         <div className="py-4">
@@ -57,7 +81,9 @@ export default function TryForFree() {
               <input
                 type="checkbox"
                 name="sayName"
-                className="mt-1"
+                className="mt-1 cursor-pointer"
+                checked={sayName}
+                onChange={() => setSayName(!sayName)}
               />
               <span className="text-sm text-left">
                 Say my name in the journey. Note! name pronunciation is still in beta. You can go back and uncheck this box.
@@ -68,10 +94,11 @@ export default function TryForFree() {
         {/* Lets Go Button */}
         <button
           type="submit"
-          disabled={!name?.length}
           className="w-full bg-white text-black disabled:cursor-not-allowed py-3 rounded-full font-semibold hover:bg-purple-900 transition duration-300"
         >
-          Lets Go
+          {
+            loading ? "Loading..." : "Lets Go"
+          }
         </button>
         </form>
       </div>

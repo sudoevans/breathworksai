@@ -1,10 +1,9 @@
-'use client'
 import React from 'react'
 import Link from 'next/link'
-import { signIn } from 'next-auth/react'
 import Logo from './components/Logo'
 
 const Page = () => {
+
   return (
     <div className="min-h-screen text-white pt-8 pb-[5rem] flex flex-col items-center relative overflow-hidden">
     <div className="z-10 w-full max-w-xl px-4 text-center">

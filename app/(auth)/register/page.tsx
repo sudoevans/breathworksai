@@ -14,7 +14,7 @@ export default function Signup() {
   const [language, setLanguage] = useState('')
   const [password, setPassword] = useState('')
   const [email, setEmail] = useState('')
-  const [sayName, setSayName] = useState('')
+  const [sayName, setSayName] = useState(false)
   const router = useRouter()
   const [loading, setLoading] = useState(false)
 
@@ -46,9 +46,10 @@ export default function Signup() {
   }
 
   useEffect(() => {
-    const {name, language}  = loadFromLocalStorage('selections')
+    const {name, language, sayName}  = loadFromLocalStorage('selections')
     setName(name)
     setLanguage(language)
+    setSayName(sayName)
   }, [])
 
   return (
@@ -115,8 +116,8 @@ export default function Signup() {
               type="checkbox"
               name="sayName"
               id="sayName"
-              value={sayName}
-              onChange={evt => setSayName(evt.target.value)}
+              checked={sayName}
+              onChange={evt => setSayName(!sayName)}
               className="mr-2 cursor-pointer"
             />
             <label className="text-gray-300">

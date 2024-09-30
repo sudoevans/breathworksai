@@ -6,157 +6,116 @@ import { loadFromLocalStorage } from 'utils/localStorage';
 
 
   type Voice = 'Ryan' | 'Jenny' | 'Amelia' | 'Christopher';
-const PlayerPage = () => {
+const Page = () => {
   const router = useRouter()
-    const [isPlaying, setIsPlaying] = useState<boolean>(false);
-    const [masterVolume, setMasterVolume] = useState<number>(1);
-    const [volumes, setVolumes] = useState<number[]>([1, 1, 1, 1]);
-    const [isMuted, setIsMuted] = useState<boolean>(false);
-    const [originalVolumes, setOriginalVolumes] = useState<number[]>(volumes);
-    const [selectedVoice, setSelectedVoice] = useState<Voice  | undefined>();
-    const [collections, setCollections] =  useState([])
-    const [playCollection, setPlayCollection] = useState<any>({})
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [masterVolume, setMasterVolume] = useState<number>(1);
+  const [volumes, setVolumes] = useState<number[]>([1, 1, 1, 1]);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [originalVolumes, setOriginalVolumes] = useState<number[]>(volumes);
+  const [selectedVoice, setSelectedVoice] = useState<Voice  | undefined>();
+  const [collections, setCollections] =  useState([])
+  const [playCollection, setPlayCollection] = useState<any>({})
 
-    const [username, setUsername] = useState('')
-    const guideAudioRef = useRef<any | null>(null);
-    
+  const [username, setUsername] = useState('')
+  const [language, setLanguage] = useState('')
+  const guideAudioRef = useRef<any | null>(null);
   
-    const audioRefs = useRef<{ voiceData: React.RefObject<any>, music: React.RefObject<any>, purpose: React.RefObject<any> }>({
-      voiceData: React.createRef(),
-      music: React.createRef(),
-      purpose: React.createRef(),
-    });
 
-    const handleSelectToPlay = (index) => {
-      setPlayCollection(collections[index]) 
+  const audioRefs = useRef<{ voiceData: React.RefObject<any>, music: React.RefObject<any>, purpose: React.RefObject<any> }>({
+    voiceData: React.createRef(),
+    music: React.createRef(),
+    purpose: React.createRef(),
+  });
+
+  const handleSelectToPlay = (index) => {
+    setPlayCollection(collections[index]) 
+  }
+
+  const fetchMusicCollections = async () => {
+    const response = await fetch('/api/collection', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  
+    const data = await response.json();
+    if (response.ok) {
+      setCollections(data)
+    } else {
+      console.error('Error fetching music collections:', data);
+    }
+  };
+
+
+  const removeMusicCollections = async (id:string) => {
+
+    try {
+      const response = await fetch('/api/collection', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to remove collection');
+      }
+
+      setCollections((prev) => prev.filter((collection) => collection.id !== id));
+
+      if(collections.length === 0){
+        router.back()
+      }
+    } catch (err: any) {
+      console.log(err)
+    }
+  };
+
+
+  const handlePlayPause = () => {
+    collections.length && setIsPlaying(prev => !prev);
+    const { music, purpose } = audioRefs.current;
+
+    if (music.current) {
+      if (isPlaying) {
+        music.current.pause();
+      } else {
+        music.current.play();
+      }
     }
 
-      useEffect(() => {
-        if (collections.length > 0) {
+    if (purpose.current) {
+      if (isPlaying) {
+        purpose.current.pause();
+      } else {
+        purpose.current.play();
+      }
+    }
+  };
 
-          setPlayCollection(collections[0])
-          
-        }
-      }, [collections]);
+  const handleRewind = () => {
+    const musicRef = audioRefs.current.music.current;
+    const purposeRef = audioRefs.current.purpose.current
+    if (musicRef && purposeRef) {
+      musicRef.currentTime = Math.min(musicRef.currentTime - 10, musicRef.duration);
+      purposeRef.currentTime = Math.min(musicRef.currentTime - 10, purposeRef.duration);
+    }
+  };
 
-      useEffect(() => {
-        if (collections.length > 0){
-          if(audioRefs.current.music.current){
-            audioRefs.current.music.current.src = playCollection.music;
-          }
-          if(audioRefs.current.purpose.current){
-            audioRefs.current.purpose.current.src = playCollection.purpose;
-          }
-         if(audioRefs.current.voiceData.current){
-          audioRefs.current.voiceData.current.src = playCollection.voiceData;
-         }
-        }else{
-          if(audioRefs.current.music.current){
-            audioRefs.current.music.current.src = undefined
-          }
-          if(audioRefs.current.purpose.current){
-            audioRefs.current.purpose.current.src = undefined;
-          }
-         if(audioRefs.current.voiceData.current){
-          audioRefs.current.voiceData.current.src = undefined
-         }
-        }
-      }, [playCollection, collections])
-
-      const fetchMusicCollections = async () => {
-        const response = await fetch('/api/collection', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-      
-        const data = await response.json();
-        if (response.ok) {
-          setCollections(data)
-        } else {
-          console.error('Error fetching music collections:', data);
-        }
-      };
-
-      const removeMusicCollections = async (id:string) => {
-    
-        try {
-          const response = await fetch('/api/collection', {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id }),
-          });
-    
-          if (!response.ok) {
-            throw new Error('Failed to remove collection');
-          }
-    
-          setCollections((prev) => prev.filter((collection) => collection.id !== id));
-
-          if(collections.length === 0){
-            router.back()
-          }
-        } catch (err: any) {
-          console.log(err)
-        }
-      };
-      
-    
-      useEffect(() => {
-        // Load username from local storage
-        setUsername(loadFromLocalStorage('selections')?.name || '');
-    
-        // Load the selected voice guide
-        const info = loadFromLocalStorage('audio');
-        setSelectedVoice(info.name);
-        fetchMusicCollections()
-    
-      }, []);
-
-      const handlePlayPause = () => {
-        collections.length && setIsPlaying(prev => !prev);
-        const { music, purpose } = audioRefs.current;
-    
-        if (music.current) {
-          if (isPlaying) {
-            music.current.pause();
-          } else {
-            music.current.play();
-          }
-        }
-    
-        if (purpose.current) {
-          if (isPlaying) {
-            purpose.current.pause();
-          } else {
-            purpose.current.play();
-          }
-        }
-      };
-    
-      const handleRewind = () => {
-        const musicRef = audioRefs.current.music.current;
-        const purposeRef = audioRefs.current.purpose.current
-        if (musicRef && purposeRef) {
-          musicRef.currentTime = Math.min(musicRef.currentTime - 10, musicRef.duration);
-          purposeRef.currentTime = Math.min(musicRef.currentTime - 10, purposeRef.duration);
-        }
-      };
-    
-      const handleForward = () => {
-        const musicRef = audioRefs.current.music.current;
-        const purposeRef = audioRefs.current.purpose.current
-        if (musicRef && purposeRef) {
-          musicRef.currentTime = Math.min(musicRef.currentTime + 10, musicRef.duration);
-          purposeRef.currentTime = Math.min(musicRef.currentTime + 10, purposeRef.duration);
-        }
-      };
-    
-      const handleMasterVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const volume = parseFloat(e.target.value);
+  const handleForward = () => {
+    const musicRef = audioRefs.current.music.current;
+    const purposeRef = audioRefs.current.purpose.current
+    if (musicRef && purposeRef) {
+      musicRef.currentTime = Math.min(musicRef.currentTime + 10, musicRef.duration);
+      purposeRef.currentTime = Math.min(musicRef.currentTime + 10, purposeRef.duration);
+    }
+  };
+  
+  const handleMasterVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const volume = parseFloat(e.target.value);
     setMasterVolume(volume);
     const musicRef = audioRefs.current.music.current;
     const purposeRef = audioRefs.current.purpose.current
@@ -164,81 +123,132 @@ const PlayerPage = () => {
       musicRef.volume = isMuted ? 0 : volume;
       purposeRef.volume = isMuted ? 0 : volume;
     }
-      };
-    
-      const handleVolumeChange = (index: string, e: React.ChangeEvent<HTMLInputElement>) => {
-        const volume = parseFloat(e.target.value);
-        const allInfo = {
-          'voiceData': 0,
-          "music": 1,
-          "purpose": 2
-        }
-        const selected = 
-        setVolumes(volumes.map((vol, i) => (i === allInfo[index] ? volume : vol)));
-        if (audioRefs.current[index].current) {
-          audioRefs.current[index].current.volume = isMuted ? 0 : masterVolume * volume;
-        }
-      };
+  };
+  
+    const handleVolumeChange = (index: string, e: React.ChangeEvent<HTMLInputElement>) => {
+      const volume = parseFloat(e.target.value);
+      const allInfo = {
+        'voiceData': 0,
+        "music": 1,
+        "purpose": 2
+      }
+      const selected = 
+      setVolumes(volumes.map((vol, i) => (i === allInfo[index] ? volume : vol)));
+      if (audioRefs.current[index].current) {
+        audioRefs.current[index].current.volume = isMuted ? 0 : masterVolume * volume;
+      }
+    };
 
-      const toggleMute = () => {
-        setIsMuted(prev => {
-          const newIsMuted = !prev;
-          const { music, purpose } = audioRefs.current;
-          
-          if (music.current) {
-            if (newIsMuted) {
-              // Store original volume and mute
-              setOriginalVolumes(prevVolumes => ({
-                ...prevVolumes,
-                music: music.current.volume,
-                purpose: purpose.current ? purpose.current.volume : 1
-              }));
-              music.current.volume = 0;
-            } else {
-              // Restore original volumes
-              music.current.volume = masterVolume * originalVolumes[0];
-              if (purpose.current) {
-                purpose.current.volume = masterVolume * originalVolumes[1];
-              }
-            }
-          }
-    
+  const toggleMute = () => {
+    setIsMuted(prev => {
+      const newIsMuted = !prev;
+      const { music, purpose } = audioRefs.current;
+      
+      if (music.current) {
+        if (newIsMuted) {
+          // Store original volume and mute
+          setOriginalVolumes(prevVolumes => ({
+            ...prevVolumes,
+            music: music.current.volume,
+            purpose: purpose.current ? purpose.current.volume : 1
+          }));
+          music.current.volume = 0;
+        } else {
+          // Restore original volumes
+          music.current.volume = masterVolume * originalVolumes[0];
           if (purpose.current) {
-            if (newIsMuted) {
-              // Mute purpose audio
-              purpose.current.volume = 0;
-            } else {
-              // Restore original volume
-              purpose.current.volume = masterVolume * originalVolumes[1];
-            }
-          }
-    
-          return newIsMuted;
-        });
-      };
-
-      const playGuidance = () => {
-        const audioElement = guideAudioRef.current;
-        if (audioElement) {
-          // Check if audio is playing
-          if (!audioElement.paused) {
-            // Pause if audio is playing
-            audioElement.pause();
-          } else {
-            // Set source and play if audio is not playing
-            audioElement.src = loadFromLocalStorage('audio')["voice-guide"];
-            audioElement.playbackRate = 0.7;
-            audioElement.play();
+            purpose.current.volume = masterVolume * originalVolumes[1];
           }
         }
-      };
-      const disableScroll = () => {
-        document.body.classList.add('no-scroll');
-      };
-    
-      const enableScroll = () => {
-        document.body.classList.remove('no-scroll');
-      };
+      }
+
+      if (purpose.current) {
+        if (newIsMuted) {
+          // Mute purpose audio
+          purpose.current.volume = 0;
+        } else {
+          // Restore original volume
+          purpose.current.volume = masterVolume * originalVolumes[1];
+        }
+      }
+
+      return newIsMuted;
+    });
+  };
+
+  const playGuidance = () => {
+    const audioElement = guideAudioRef.current;
+    const isAnyAudioPlaying = Object.values(audioRefs.current).some(ref => {
+      return ref.current && !ref.current.paused;
+    });
+  
+    if (isAnyAudioPlaying) {
+      audioRefs.current.voiceData.current.pause();
+    }
+    if (audioElement) {
+      // Check if audio is playing
+      if (!audioElement.paused) {
+        // Pause if audio is playing
+        audioElement.pause();
+      } else {
+        // Set source and play if audio is not playing
+        audioElement.src = playCollection?.voiceData
+        audioElement.playbackRate = 0.7;
+        audioElement.play();
+      }
+    }
+  };
+  const disableScroll = () => {
+    document.body.classList.add('no-scroll');
+  };
+
+  const enableScroll = () => {
+    document.body.classList.remove('no-scroll');
+  };
+
+  useEffect(() => {
+    // Load username from local storage
+    setUsername(loadFromLocalStorage('selections')?.name || '');
+    setLanguage(loadFromLocalStorage('selections')?.language || '');
+
+    // Load the selected voice guide
+    const info = loadFromLocalStorage('audio');
+    setSelectedVoice(info.name);
+    fetchMusicCollections()
+
+  }, []);
+
+  useEffect(() => {
+    if (collections.length > 0) {
+
+      setPlayCollection(collections[0])
+      
+    }
+  }, [collections]);
+
+  useEffect(() => {
+    if (collections.length > 0){
+      if(audioRefs.current.music.current){
+        audioRefs.current.music.current.src = playCollection.music;
+      }
+      if(audioRefs.current.purpose.current){
+        audioRefs.current.purpose.current.src = playCollection.purpose;
+      }
+      if(audioRefs.current.voiceData.current){
+      audioRefs.current.voiceData.current.src = playCollection.voiceData;
+      }
+    }else{
+      if(audioRefs.current.music.current){
+        audioRefs.current.music.current.src = undefined
+      }
+      if(audioRefs.current.purpose.current){
+        audioRefs.current.purpose.current.src = undefined;
+      }
+      if(audioRefs.current.voiceData.current){
+      audioRefs.current.voiceData.current.src = undefined
+      }
+    }
+  }, [playCollection, collections])
       
   return (
     
@@ -384,8 +394,8 @@ const PlayerPage = () => {
       />
     </div>
 
-</div>
-<div className='mt-4 py-6 text-left w-full'>
+    </div>
+    <div className='mt-4 py-6 text-left w-full'>
         <div className='py-4 -mx-6 px-6 border-b-2 border-[#AE9BCE] flex gap-x-3 items-center'>
             <div className='cursor-pointer' onClick={playGuidance}>
             
@@ -399,7 +409,7 @@ const PlayerPage = () => {
         {
           collections.map((item, index) => (
             <div key={index}>
-              <TemplateMusic selectPlay={() => handleSelectToPlay(index)} handleClick={() => removeMusicCollections(item.id)}/>
+              <TemplateMusic user={username} genries={[item.musicGenre,item.purposeGenre, language === 'en' ? 'English' : 'Swedish']} voice={item?.voice} selectPlay={() => handleSelectToPlay(index)} handleClick={() => removeMusicCollections(item.id)}/>
             </div>
           ))
         }
@@ -413,4 +423,4 @@ const PlayerPage = () => {
   )
 }
 
-export default PlayerPage
+export default Page

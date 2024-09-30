@@ -74,7 +74,7 @@ const handler =  NextAuth({
         session.user = {...token}
         return session;
     }
-  }
+  },
 })
 
 export { handler as GET, handler as POST }

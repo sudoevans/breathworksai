@@ -1,6 +1,6 @@
 import React from 'react'
 
-const TemplateMusic = ({handleClick, selectPlay}: {handleClick: any, selectPlay}) => {
+const TemplateMusic = ({handleClick, selectPlay, user, voice, genries}: {handleClick: any, selectPlay: any, voice: string, user?: string, genries?: string[]}) => {
   return (
     <div className='py-3.5 border-b-2 border-[#AE9BCE]'>
         <div className='w-full flex items-center justify-between'>
@@ -9,12 +9,12 @@ const TemplateMusic = ({handleClick, selectPlay}: {handleClick: any, selectPlay}
                 <svg className="svg-icon" style={{ width: "1rem", height: "1rem", verticalAlign: "middle", fill: "#ffffff", overflow: "hidden" }} viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
         <path
     d="M667.733333 492.8l-281.6-281.6c-10.666667-10.666667-21.333333-14.933333-27.733333-10.666667s-12.8 12.8-12.8 27.733334v569.6c0 14.933333 4.266667 25.6 12.8 27.733333s17.066667 0 27.733333-10.666667l281.6-281.6c4.266667-4.266667 8.533333-12.8 8.533333-19.2 0-10.666667-2.133333-17.066667-8.533333-21.333333z"
-  /></svg>
+  /></svg> 
            
                 </div>
                 <div className='title-text'>
-                    <p className='uppercase text-xs font-light leading-tighter'>Name: <span className='capitalize'>Speech of David and Ryan</span></p>
-                    <p className='text-[10px] font-light text-[#AE9BCE]'>Hip hop, space, English</p>
+                    <p className='uppercase text-xs font-light leading-tighter'>Name: <span className='capitalize'>Speech of {user && user + " And "} {voice}</span></p>
+                    <p className='text-[10px] font-light text-[#AE9BCE]'>{genries?.join(", ")}</p>
                 </div>
             </div>
             <div className='trash cursor-pointer' onClick={handleClick}>

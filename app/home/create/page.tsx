@@ -43,7 +43,7 @@ const Page: React.FC = () => {
   
   const [selectedVoice, setSelectedVoice] = useState<Voice>('Ryan');
   const [selectedMusic, setSelectedMusic] = useState<any>({label: 'Hip hop', url: ''});
-  const [selectedPurpose, setSelectedPurpose] = useState<Purpose>('Be happy');
+  const [selectedPurpose, setSelectedPurpose] = useState<{label: Purpose, url: string}>({label: 'Be happy',  url: ''});
   const [progress, setProgress] = useState<number>(0);
   const [position, setPosition] = useState(2);
   const {data: session} = useSession()
@@ -53,84 +53,22 @@ const Page: React.FC = () => {
   const musicRef = useRef<any | null>(null);
   const guideAudioRef = useRef<any | null>(null);
 
-
-    // Preload all guide audios when the component mounts
-  useEffect(() => {
-    const preloadGuideAudios = async () => {
-      const loadingQueue = Object.keys(JSON.parse(JSON.stringify(messages)))
-      for (let voice of loadingQueue) {
-        await preloadAudio(voice);
-      }
-    };
-    preloadGuideAudios();
-  }, []);
-
-
-  // Preload individual guide audio
-  const preloadAudio = async (voice: string) => {
-    try {
-      // get each model voice alterego
-      const alterEgo = JSON.parse(JSON.stringify(messages))[voice]?.ego;
-
-      // get each model's supposed message
-      const parsedMessages = JSON.parse(JSON.stringify(messages));
-
-      // replace placeholder text with individual's name or just skip if their preference is not to
-    const newString = replacePlaceholder(parsedMessages[voice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'en'], loadFromLocalStorage('selections')?.name);
-    // fetch  each voice
-      const response = await fetch("/api/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: newString, voice: `${alterEgo}` }),
-      });
-
-      // convert to blob for processing
-      const file = await response.blob();
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-
-        // store each guides recording to a state
-        setGuideAudios((prevAudios) => ({
-          ...prevAudios,
-          [voice]: reader.result as string,
-        }));
-      };
-    } catch (error:any) {
-      if (error.name === 'AbortError') {
-        console.log(`Preload for ${voice} was aborted.`);
-      } else {
-        console.error(`Failed to preload audio for ${voice}:`, error);
-      }
-    }
-  };
-
-  const addMusicCollection = async (voice, music, purpose, voiceData) => {
+  const addMusicCollection = async (voice: string, music: string, musicGenre: string, purpose: string, purposeGenre: string, voiceData: string) => {
     const response = await fetch('/api/collection', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ voice, music, purpose, voiceData }),
+      body: JSON.stringify({ voice, music, musicGenre, purposeGenre, purpose, voiceData }),
     });
   
     const data = await response.json();
     if (response.ok) {
-      console.log('Music collection added:', data);
+      return response.ok
     } else {
-      console.error('Error adding music collection:', data);
+      throw new Error(`Error adding music collection: ${data.message}`)
     }
   };
-
-
-  useEffect(() => {
-    // Play sample audio when voice changes
-    if (audioRef.current) {
-      audioRef.current.src = `/audio/jenny_sample.mp3`;
-      // audioRef.current.play();
-    }
-
-  }, []);
 
 
   const handleMusicChange = (music: Music) => {
@@ -159,23 +97,33 @@ const Page: React.FC = () => {
     audioRef.current?.pause()
     guideAudioRef.current?.pause()
     musicRef.current?.pause()
-    setSelectedPurpose(purpose);
+    setSelectedPurpose({label: purpose, url: ''});
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     // Simulate progress
+    if (progress > 0){
+      return;
+    }
     if(session){
       let currentProgress = 0;
-      saveToLocalStorage('collection', {"music": selectedMusic})
-      addMusicCollection(selectedVoice, selectedMusic.url, selectedMusic.url, guideAudioRef.current.src)
-    const interval = setInterval(() => {
-      currentProgress += 10;
-      setProgress(currentProgress);
-      if (currentProgress >= 100) {
-        clearInterval(interval);
-        router.push("/home/player")
+
+      try{
+        const success = await addMusicCollection(selectedVoice, selectedMusic.url, selectedMusic.label, selectedPurpose.url, selectedPurpose.label, guideAudioRef.current.src);
+
+       if (success){
+        const interval = setInterval(() => {
+          currentProgress += 10;
+          setProgress(currentProgress);
+          if (currentProgress >= 100) {
+            clearInterval(interval);
+            router.push("/home/player")
+          }
+        }, 500);
+       }
+      }catch (err){
+        console.log(err)
       }
-    }, 500);
     }else{
       router.push('/login')
     }
@@ -191,32 +139,43 @@ const Page: React.FC = () => {
     } else{
       voice = voiceSelected
     }
-    guideAudioRef?.current?.pause()
-    musicRef.current?.pause()
-    setSelectedVoice(voice);
-    setPosition(index + 1);
-    const parsedMessages = JSON.parse(JSON.stringify(messages));
-    const newString = replacePlaceholder(parsedMessages[voice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'en'], loadFromLocalStorage('selections')?.name);
+    guideAudioRef?.current?.pause();
 
-    // If audio for selected voice isn't preloaded yet, fetch it immediately
+    musicRef.current?.pause();
+
+    setSelectedVoice(voice);
+
+    setPosition(index + 1);
+
+    const parsedMessages = JSON.parse(JSON.stringify(messages));
+
+    const nameFromLocalStorage = loadFromLocalStorage('selections')?.name;
+
+    const messagePerLanguage = parsedMessages[voice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'en'];
+
+    const newString = replacePlaceholder(messagePerLanguage, nameFromLocalStorage);
+
+    // If audio for selected voice isn't preloaded yet, fetch it after 300 milliseconds
+    // if preloaded already, delay fora second to allow for scroll behaviour and play 1 second after swipe of seclection of voice
     if (!guideAudios[voice]) {
       setTimeout(() => {
       getElevenLabsResponse(newString);
     }, 300);
     } else {
-      
       setTimeout(() => {
         playPreloadedAudio(guideAudios[voice]);
-      }, 2000)
+      }, 1000)
     }
     
   };
 
   // method to play selected audio voice
-    const playPreloadedAudio = (audioSrc: string) => {
-    if (guideAudioRef.current) {
-      audioRef.current.play();
+  const playPreloadedAudio = (audioSrc: string) => {
+    if (guideAudioRef.current && audioRef.current) {
+      guideAudioRef.current.pause();
+      // audioRef.current.pause();
       guideAudioRef.current.src = audioSrc;
+      audioRef.current.play();
       guideAudioRef.current.playbackRate = 0.7
       guideAudioRef.current.play();
     }
@@ -224,8 +183,10 @@ const Page: React.FC = () => {
 
 
   // important to query selected voice if all voices have not been loaded yet
-    const getElevenLabsResponse = async (text: string) => {
-      const alterEgo = JSON.parse(JSON.stringify(messages))[selectedVoice]?.ego
+  const getElevenLabsResponse = async (text: string) => {
+
+    const alterEgoId = JSON.parse(JSON.stringify(messages))[selectedVoice]?.ego;
+
     const response = await fetch("/api/create", {
       method: "POST",
       headers: {
@@ -233,7 +194,7 @@ const Page: React.FC = () => {
       },
       body: JSON.stringify({
         message: text,
-        voice: `${alterEgo}`
+        voice: `${alterEgoId}`
       })
     });
 
@@ -253,9 +214,66 @@ const Page: React.FC = () => {
     guideAudioRef.current?.pause()
     audioRef.current?.pause()
     musicRef.current?.pause()
-    // save selected voice to local storage
-    saveToLocalStorage('audio', {"voice-guide": guideAudioRef.current.src, "name": selectedVoice})
   }
+
+    // Preload individual guide audio
+  const preloadAudio = async (voice: string) => {
+    try {
+      // get each model voice alterego
+      const alterEgoId = JSON.parse(JSON.stringify(messages))[voice]?.ego;
+
+      // get each model's supposed message
+      const parsedMessages = JSON.parse(JSON.stringify(messages));
+
+      // replace placeholder text with individual's name or just skip if their preference is not to
+
+      const nameFromLocalStorage = loadFromLocalStorage('selections')?.name;
+      const messagePerLanguage = parsedMessages[voice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'en']
+
+      const newString = replacePlaceholder(messagePerLanguage, nameFromLocalStorage);
+      // fetch  each voice
+      const response = await fetch("/api/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: newString, voice: `${alterEgoId}` }),
+      });
+
+      // convert to blob for processing
+      const file = await response.blob();
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+
+        // store each guides recording to a state
+        setGuideAudios((prevAudios) => ({
+          ...prevAudios,
+          [voice]: reader.result as string,
+        }));
+      };
+    } catch (error:any) {
+      if (error.name === 'AbortError') {
+        console.log(`Preload for ${voice} was aborted.`);
+      } else {
+        console.error(`Failed to preload audio for ${voice}:`, error);
+      }
+    }
+  };
+
+
+  // Preload all guide audios when the page mounts
+  useEffect(() => {
+    const preloadGuideAudios = async () => {
+      const loadingQueue = Object.keys(JSON.parse(JSON.stringify(messages)))
+      for (let voice of loadingQueue) {
+        await preloadAudio(voice);
+      }
+    };
+    preloadGuideAudios();
+    if (audioRef.current) {
+      audioRef.current.src = `/audio/jenny_sample.mp3`;
+    }
+  }, []);
+
   
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -263,6 +281,8 @@ const Page: React.FC = () => {
         router.push('/register')
       }
     }, 3000)
+
+    return () => clearTimeout(timer)
   }, [router, session])
 
   return (
@@ -397,7 +417,7 @@ const Page: React.FC = () => {
          <button
                   key={purpose}
                   className={`min-w-[6rem] py-2 rounded-lg transition-opacity duration-300 ${
-                    selectedPurpose === purpose ? 'bg-purple-600 opacity-100' : 'bg-purple-800 opacity-50'
+                    selectedPurpose.label === purpose ? 'bg-purple-600 opacity-100' : 'bg-purple-800 opacity-50'
                   }`}
                   
                 >
