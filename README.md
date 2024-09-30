@@ -16,7 +16,7 @@ The Personalized Breathworks App is a web-based platform designed to provide tai
 
 1. **User Authentication**: The app uses NextAuth.js for secure user authentication. New users can register with an email and password, and returning users can log in to access their personalized breathwork dashboard.
    
-2. **Personalized Breathwork Sessions**: Once logged in, users are presented with tailored breathwork exercises designed to meet their individual needs. These exercises can help improve sleep, reduce stress, and promote overall mental clarity.
+2. **Personalized Breathwork Session**: Once logged in, users are presented with tailored breathwork exercises designed to meet their individual needs. These exercises can help improve sleep, reduce stress, and promote overall mental clarity.
 
 3. **Session Tracking**: User activity, including completed sessions, is stored in the PostgreSQL database. This allows users to track their progress and revisit previous sessions as needed.
 
