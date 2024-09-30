@@ -210,10 +210,6 @@ const Page = () => {
     // Load username from local storage
     setUsername(loadFromLocalStorage('selections')?.name || '');
     setLanguage(loadFromLocalStorage('selections')?.language || '');
-
-    // Load the selected voice guide
-    const info = loadFromLocalStorage('audio');
-    setSelectedVoice(info.name);
     fetchMusicCollections()
 
   }, []);
