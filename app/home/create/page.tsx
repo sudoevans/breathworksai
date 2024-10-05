@@ -45,15 +45,8 @@ const Page: React.FC = () => {
   const [selectedPurpose, setSelectedPurpose] = useState<{label: Purpose, url: string}>({label: 'Be happy',  url: ''});
   const [progress, setProgress] = useState<number>(0);
   const [position, setPosition] = useState(2);
-  const [loadImage, setLoadImage] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoadImage(true);
-    }, 1000); // Delay in milliseconds (e.g., 1000ms = 1s)
-
-    return () => clearTimeout(timer); // Cleanup timer on unmount
-  }, []);
   const {data: session} = useSession()
   const [guideAudios, setGuideAudios] = useState<Record<string, string>>({});
 
@@ -110,6 +103,7 @@ const Page: React.FC = () => {
 
   const handleCreate = async () => {
     // Simulate progress
+    setLoading(true)
     if (progress > 0){
       return;
     }
@@ -126,6 +120,7 @@ const Page: React.FC = () => {
           if (currentProgress >= 100) {
             clearInterval(interval);
             router.push("/home/player")
+            setLoading(false)
           }
         }, 500);
        }
@@ -452,6 +447,7 @@ const Page: React.FC = () => {
           <button
           className="cursor-pointer block w-full bg-white text-2xl text-[#0A0A0B] py-3.5 disabled:cursor-not-allowed rounded-full font-bold hover:bg-opacity-85 transition duration-300"
           onClick={handleCreate}
+          disabled={loading}
         >
           Create
         </button>
