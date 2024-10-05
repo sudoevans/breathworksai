@@ -123,6 +123,9 @@ const Page = () => {
       musicRef.volume = isMuted ? 0 : volume;
       purposeRef.volume = isMuted ? 0 : volume;
     }
+    if (guideAudioRef) {
+      guideAudioRef.current.volume = isMuted ? 0 : volume;
+    }
   };
   
     const handleVolumeChange = (index: string, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,12 +133,16 @@ const Page = () => {
       const allInfo = {
         'voiceData': 0,
         "music": 1,
-        "purpose": 2
+        "purpose": 2,
+        "lastData": 3,
       }
       const selected = 
       setVolumes(volumes.map((vol, i) => (i === allInfo[index] ? volume : vol)));
-      if (audioRefs.current[index].current) {
+      if (audioRefs?.current[index]?.current) {
         audioRefs.current[index].current.volume = isMuted ? 0 : masterVolume * volume;
+      }
+      if(index === "voiceData"){
+        guideAudioRef.current.volume = isMuted ? 0 : masterVolume * volume
       }
     };
 
@@ -385,8 +392,8 @@ const Page = () => {
         onMouseUp={enableScroll}
         onTouchStart={disableScroll}
         onTouchEnd={enableScroll}
-        value={volumes[0]}
-        onChange={(e) => handleVolumeChange('voiceData', e)}
+        value={volumes[3]}
+        onChange={(e) => handleVolumeChange('lastData', e)}
         className="range-sub-input transform -rotate-90 w-24 h-6"
         style={{ transformOrigin: 'center center' }}
       />
