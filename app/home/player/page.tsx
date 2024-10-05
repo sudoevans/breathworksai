@@ -151,7 +151,7 @@ const Page = () => {
       const newIsMuted = !prev;
       const { music, purpose } = audioRefs.current;
       
-      if (music.current) {
+      if (music.current || guideAudioRef.current) {
         if (newIsMuted) {
           // Store original volume and mute
           setOriginalVolumes(prevVolumes => ({
@@ -160,11 +160,15 @@ const Page = () => {
             purpose: purpose.current ? purpose.current.volume : 1
           }));
           music.current.volume = 0;
+          guideAudioRef.current.volume = 0
         } else {
           // Restore original volumes
           music.current.volume = masterVolume * originalVolumes[0];
           if (purpose.current) {
             purpose.current.volume = masterVolume * originalVolumes[1];
+          }
+          if (guideAudioRef.current){
+            guideAudioRef.current.volume = masterVolume
           }
         }
       }
