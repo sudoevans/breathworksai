@@ -1,8 +1,10 @@
 import { ClientWrapper } from './components/ClientWrapper';
 import './globals.css';
 import { GeistSans } from 'geist/font/sans';
-import "swiper/swiper-bundle.css";
+import 'swiper/css';
+import 'swiper/swiper-bundle.css'
 import "swiper/css/pagination";
+import 'swiper/css/effect-coverflow';
 
 let title = 'Personalized Breathwork';
 let description =

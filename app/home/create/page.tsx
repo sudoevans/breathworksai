@@ -10,11 +10,10 @@ import messages from '../../../sample-voice.json';
 import { loadFromLocalStorage, saveToLocalStorage } from 'utils/localStorage';
 import { replacePlaceholder } from 'utils/replacebuilder';
 import { useSession } from 'next-auth/react';
-import {Swiper, SwiperSlide} from 'swiper/react';
+import {Swiper, SwiperSlide, } from 'swiper/react';
 import { EffectCoverflow, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/effect-coverflow';
-import 'swiper/css/pagination';
+import Image from 'next/image';
+import 'swiper/react'
 
 // Define types for our selections
 type Voice = 'Ryan' | 'Jenny' | 'Amelia' | 'Christopher';
@@ -46,6 +45,15 @@ const Page: React.FC = () => {
   const [selectedPurpose, setSelectedPurpose] = useState<{label: Purpose, url: string}>({label: 'Be happy',  url: ''});
   const [progress, setProgress] = useState<number>(0);
   const [position, setPosition] = useState(2);
+  const [loadImage, setLoadImage] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoadImage(true);
+    }, 1000); // Delay in milliseconds (e.g., 1000ms = 1s)
+
+    return () => clearTimeout(timer); // Cleanup timer on unmount
+  }, []);
   const {data: session} = useSession()
   const [guideAudios, setGuideAudios] = useState<Record<string, string>>({});
 
@@ -310,7 +318,9 @@ const Page: React.FC = () => {
 
 
     <div className='h-[16rem] -mx-10 flex items-center'>
-      <Swiper
+      {
+        voices.length  > 0 && (
+          <Swiper
         effect={'coverflow'}
         grabCursor={true}
         centeredSlides={true}
@@ -328,15 +338,19 @@ const Page: React.FC = () => {
         className="mySwiper"
         onRealIndexChange={(index) => handleVoiceChange(null, index.activeIndex)}
       >
-         {voices.map((voice, index) => (
+         { voices.map((voice, index) => (
             <SwiperSlide zoom key={index} virtualIndex={index} className='overflow-hidden' onClick={() => handleVoiceChange(voice, index)}>
-          <img src={`/images/${voice.toLowerCase()}.png`} className='h-[14rem] rounded-2xl bg-[#0d1c2a92]' />
+              
+                  <Image alt={`swiper-img-${index}`} src={`/images/${voice.toLowerCase()}.png`} className='h-[14rem] rounded-2xl bg-[#0d1c2a92]' width={220} height={350} />
+          
         </SwiperSlide>
          )
         )}
         
        
       </Swiper>
+        )
+      }
     </div>
     <div className='mt-8 mb-4 bg-purple-600 capitalize cursor-pointer flex justify-center items-center min-w-[10rem] mx-auto py-2 rounded-full text-black w-fit font-semibold tracking-wider px-7 text-2xl' onClick={handleVoiceSelection}>{selectedVoice}</div>
             <p className="text-center mt-2 font-light tracking-wide text-lg">{selectedVoice} is our most popular guide</p>
