@@ -1,7 +1,7 @@
 'use client'
 import TemplateMusic from '@/app/components/TemplateMusic';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { loadFromLocalStorage } from 'utils/localStorage';
 
 
@@ -12,7 +12,7 @@ const Page = () => {
   const [masterVolume, setMasterVolume] = useState<number>(1);
   const [volumes, setVolumes] = useState<number[]>([1, 1, 1, 1]);
   const [isMuted, setIsMuted] = useState<boolean>(false);
-  const [originalVolumes, setOriginalVolumes] = useState<number[]>(volumes);
+  const [originalVolumes, setOriginalVolumes] = useState<number[]>([1, 1, 1, 1]);
   const [selectedVoice, setSelectedVoice] = useState<Voice  | undefined>();
   const [collections, setCollections] =  useState([])
   const [playCollection, setPlayCollection] = useState<any>({})
@@ -22,10 +22,11 @@ const Page = () => {
   const guideAudioRef = useRef<any | null>(null);
   
 
-  const audioRefs = useRef<{ voiceData: React.RefObject<any>, music: React.RefObject<any>, purpose: React.RefObject<any> }>({
+  const audioRefs = useRef<{ voiceData: React.RefObject<any>, music: React.RefObject<any>, purpose: React.RefObject<any>, lastData: React.RefObject<any> }>({
     voiceData: React.createRef(),
     music: React.createRef(),
     purpose: React.createRef(),
+    lastData: React.createRef()
   });
 
   const handleSelectToPlay = (index) => {
@@ -77,8 +78,15 @@ const Page = () => {
 
   const handlePlayPause = () => {
     collections.length && setIsPlaying(prev => !prev);
-    const { music, purpose } = audioRefs.current;
+    const { music, purpose, lastData } = audioRefs.current;
 
+    if (lastData?.current){
+      if (isPlaying) {
+      lastData.current.pause()
+    }else{
+      lastData.current.play()
+    }
+    }
     if (music.current) {
       if (isPlaying) {
         music.current.pause();
@@ -91,7 +99,7 @@ const Page = () => {
       if (isPlaying) {
         purpose.current.pause();
       } else {
-        purpose.current.play();
+        purpose?.current?.play();
       }
     }
   };
@@ -118,10 +126,12 @@ const Page = () => {
     const volume = parseFloat(e.target.value);
     setMasterVolume(volume);
     const musicRef = audioRefs.current.music.current;
-    const purposeRef = audioRefs.current.purpose.current
+    const purposeRef = audioRefs.current.purpose.current;
+    const lastRef = audioRefs.current.lastData.current;
     if (musicRef &&  purposeRef) {
       musicRef.volume = isMuted ? 0 : volume;
       purposeRef.volume = isMuted ? 0 : volume;
+      lastRef.volume = isMuted ? 0 : volume;
     }
     if (guideAudioRef) {
       guideAudioRef.current.volume = isMuted ? 0 : volume;
@@ -146,46 +156,47 @@ const Page = () => {
       }
     };
 
-  const toggleMute = () => {
-    setIsMuted(prev => {
-      const newIsMuted = !prev;
-      const { music, purpose } = audioRefs.current;
-      
-      if (music.current || guideAudioRef.current) {
-        if (newIsMuted) {
+    const handleAudioVolume = useMemo(() => {
+      const { music, purpose, lastData } = audioRefs?.current;
+  
+      // Log current music volume for debugging
+      console.log({ music: music?.current?.volume });
+  
+      if (audioRefs.current || audioRefs?.current?.music?.current?.volume) {
+        if (isMuted) {
           // Store original volume and mute
-          setOriginalVolumes(prevVolumes => ({
-            ...prevVolumes,
-            music: music.current.volume,
-            purpose: purpose.current ? purpose.current.volume : 1
-          }));
+          setOriginalVolumes(prevVolumes => {
+            const newVolumes = [...prevVolumes];
+            newVolumes[0] = guideAudioRef.current ? guideAudioRef.current.volume : 1;
+            newVolumes[1] = music.current ? music.current.volume : 1;
+            newVolumes[2] = purpose.current ? purpose.current.volume : 1;
+            newVolumes[3] = lastData.current ? lastData.current.volume : 1;
+            console.log('Original volumes stored:', newVolumes);
+            return newVolumes;
+          });
+  
+          // Mute the audio
           music.current.volume = 0;
-          guideAudioRef.current.volume = 0
+          lastData.current.volume = 0;
+          guideAudioRef.current.volume = 0;
         } else {
           // Restore original volumes
-          music.current.volume = masterVolume * originalVolumes[0];
+          if (music.current) music.current.volume = masterVolume * originalVolumes[1];
+          if (lastData.current) lastData.current.volume = masterVolume * originalVolumes[3];
           if (purpose.current) {
-            purpose.current.volume = masterVolume * originalVolumes[1];
+            purpose.current.volume = masterVolume * originalVolumes[2];
           }
-          if (guideAudioRef.current){
-            guideAudioRef.current.volume = masterVolume
+          if (guideAudioRef.current) {
+            guideAudioRef.current.volume = masterVolume * originalVolumes[0];
           }
         }
       }
+    }, []);
 
-      if (purpose.current) {
-        if (newIsMuted) {
-          // Mute purpose audio
-          purpose.current.volume = 0;
-        } else {
-          // Restore original volume
-          purpose.current.volume = masterVolume * originalVolumes[1];
-        }
-      }
-
-      return newIsMuted;
-    });
-  };
+    const toggleMute = () => {
+      setIsMuted(prev =>  !prev);
+      handleAudioVolume;
+    };
 
   const playGuidance = () => {
     const audioElement = guideAudioRef.current;
@@ -223,6 +234,10 @@ const Page = () => {
     setLanguage(loadFromLocalStorage('selections')?.language || '');
 
     fetchMusicCollections();
+    if (audioRefs.current.lastData.current){
+    audioRefs.current.lastData.current.src = `/audio/jenny_sample.mp3`
+    audioRefs.current.lastData.current.volume = 1
+    }
 
   }, []);
 
@@ -235,30 +250,25 @@ const Page = () => {
     }
   }, [collections]);
 
+
   useEffect(() => {
+    guideAudioRef.current.volume = 1
     if (collections.length > 0){
       if(audioRefs.current.music.current){
         audioRefs.current.music.current.src = playCollection.music;
+        audioRefs.current.music.current.volume = 1
       }
       if(audioRefs.current.purpose.current){
         audioRefs.current.purpose.current.src = playCollection.purpose;
+        audioRefs.current.purpose.current.volume = 1
       }
       if(audioRefs.current.voiceData.current){
       audioRefs.current.voiceData.current.src = playCollection.voiceData;
+      audioRefs.current.voiceData.current.volume = 1
       }
-    }else{
-      if(audioRefs.current.music.current){
-        audioRefs.current.music.current.src = undefined
-      }
-      if(audioRefs.current.purpose.current){
-        audioRefs.current.purpose.current.src = undefined;
-      }
-      if(audioRefs.current.voiceData.current){
-      audioRefs.current.voiceData.current.src = undefined
-      }
+     
     }
   }, [playCollection, collections])
-      
   return (
     
     <div className="z-10 mx-auto w-full absolute overflow-y-auto inset-0 bg-player-bg h-screen md:h-auto md:min-h-[48.625rem] pt-[10rem] flex flex-col justify-center gap-y-6 items-center max-w-md p-6 space-y-8">
@@ -386,7 +396,7 @@ const Page = () => {
         <div className='rounded-full mb-12 border-2 border-[#AE9BCE]'>
         <svg height="36" viewBox="0 0 48 48" width="36" xmlns="http://www.w3.org/2000/svg"><path d="M0 0h48v48H0z" fill="none"/><path d="M30 12H6v4h24v-4zm0 8H6v4h24v-4zM6 32h16v-4H6v4zm28-20v16.37c-.63-.23-1.29-.37-2-.37-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6V16h6v-4H34z" fill='#AE9BCE'/></svg>
         </div>
-      <audio ref={audioRefs.current.voiceData} />
+      <audio ref={audioRefs.current.lastData} />
       <input
         type="range"
         min="0"

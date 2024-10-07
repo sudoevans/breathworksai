@@ -208,7 +208,7 @@ const Page: React.FC = () => {
       if (guideAudioRef.current) {
         guideAudioRef.current.src = reader.result as string;
         guideAudioRef.current.playbackRate = 0.7
-        guideAudioRef.current.play();
+        // guideAudioRef.current.play();
       }
     }
   };
