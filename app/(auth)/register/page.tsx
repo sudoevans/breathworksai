@@ -46,10 +46,13 @@ export default function Signup() {
   }
 
   useEffect(() => {
-    const {name, language, sayName}  = loadFromLocalStorage('selections')
-    setName(name)
-    setLanguage(language)
-    setSayName(sayName)
+    if (loadFromLocalStorage('selections')){
+      const {name, language, sayName}  = loadFromLocalStorage('selections')
+      setName(name)
+      setLanguage(language)
+      setSayName(sayName)
+    }
+
   }, [])
 
   return (

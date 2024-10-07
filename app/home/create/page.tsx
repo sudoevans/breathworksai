@@ -152,7 +152,7 @@ const Page: React.FC = () => {
 
     const parsedMessages = JSON.parse(JSON.stringify(messages));
 
-    const nameFromLocalStorage = loadFromLocalStorage('selections')?.name;
+    const nameFromLocalStorage = loadFromLocalStorage('selections')?.name || session?.user?.name;
 
     const messagePerLanguage = parsedMessages[voice][loadFromLocalStorage('selections')?.language?.toLowerCase() || 'en'];
 
