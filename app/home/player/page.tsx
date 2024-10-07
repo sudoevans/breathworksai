@@ -156,7 +156,7 @@ const Page = () => {
       }
     };
 
-    const handleAudioVolume = useMemo(() => {
+    const handleAudioVolume = () => {
       const { music, purpose, lastData } = audioRefs?.current;
   
       // Log current music volume for debugging
@@ -191,11 +191,11 @@ const Page = () => {
           }
         }
       }
-    }, []);
+    };
 
     const toggleMute = () => {
       setIsMuted(prev =>  !prev);
-      handleAudioVolume;
+      handleAudioVolume();
     };
 
   const playGuidance = () => {

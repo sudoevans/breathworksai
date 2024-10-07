@@ -336,7 +336,7 @@ const Page: React.FC = () => {
          { voices.map((voice, index) => (
             <SwiperSlide zoom key={index} virtualIndex={index} className='overflow-hidden' onClick={() => handleVoiceChange(voice, index)}>
               
-                  <Image alt={`swiper-img-${index}`} src={`/images/${voice.toLowerCase()}.png`} className='h-[14rem] rounded-2xl bg-[#0d1c2a92]' width={220} height={350} />
+                  <Image alt={`swiper-img-${index}`} priority src={`/images/${voice.toLowerCase()}.png`} className='h-[14rem] rounded-2xl bg-[#0d1c2a92]' width={220} height={350} />
           
         </SwiperSlide>
          )
